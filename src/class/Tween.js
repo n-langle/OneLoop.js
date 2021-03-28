@@ -12,18 +12,15 @@ function Tween(options) {
 Tween.defaults = {
 	duration: 1000,
 	easing: 'linear',
-	loop: Infinity,
+	loop: 0,
 	reverse: false
 };
 
 assign(Tween.prototype, 
 	MainLoopEntry.prototype, {
 
-	start: function() {
-		this._startTime = performance.now();
-		this._mainLoop.add(this);
-		this.onStart(this._startTime, 0, this._lastValue);
-		return this;
+	start: function(delay) {
+		return MainLoopEntry.prototype.start.call(this, delay, this._lastValue);
 	},	
 
 	update: function(timestamp, tick) {
