@@ -4,7 +4,8 @@ import MainLoopEntry from '../class/MainLoopEntry';
 import ThrottledEvent from '../class/ThrottledEvent';
 import ScrollObserverEntry from '../class/ScrollObserverEntry';
 
-var scrollObserverInstances = [];
+var scrollObserverInstances = [],
+	scrollObserverAutoRefreshTimer = null;
 
 function ScrollObserver(options) {
 	MainLoopEntry.call(this, assign({}, ScrollObserver.defaults, options, {autoStart: false}));
@@ -22,6 +23,7 @@ function ScrollObserver(options) {
 	this._scroll.add('scrollstart', this._onScroll);
 
 	scrollObserverInstances.push(this);
+	ScrollObserver.startAutoRefresh()
 }
 
 ScrollObserver.defaults = {
@@ -35,6 +37,10 @@ assign(ScrollObserver.prototype,
 		this._scroll.remove('scrollstart', this._onScroll);
 		this._resize.remove('resize', this._onResize);
 		scrollObserverInstances.splice(scrollObserverInstances.indexOf(this),  1);
+
+		if (scrollObserverInstances.length === 0) {
+			ScrollObserver.stopAutoRefresh()
+		}
 	},
 
 	observe: function(element, options) {
@@ -110,11 +116,50 @@ assign(ScrollObserver.prototype,
 	}
 });
 
+// ----
+// utils
+// ----
+function getDocumentHeight() {
+	var html = document.documentElement,
+		body = document.body;
+
+	return Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+}
+
+// ----
+// statics
+// ----
+ScrollObserver.autoRefreshDelay = 1000;
+
+ScrollObserver.startAutoRefresh = function() {
+	if (scrollObserverAutoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
+		var lastDocumentHeight = getDocumentHeight();
+
+		scrollObserverAutoRefreshTimer = setInterval(function() {
+			var height = getDocumentHeight(),
+				i;
+
+			if ( height !== lastDocumentHeight) {
+				for (i = 0; i < scrollObserverInstances.length; i++) {
+					scrollObserverInstances[i].refresh();
+				}
+				lastDocumentHeight = height;
+			}
+		}, ScrollObserver.autoRefreshDelay)
+	}
+	return this;
+}
+
+ScrollObserver.stopAutoRefresh = function() {
+	clearInterval(scrollObserverAutoRefreshTimer);
+	scrollObserverAutoRefreshTimer = null;
+	return this;
+}
+
 ScrollObserver.destroy = function() {
 	while(scrollObserverInstances.length) {
 		scrollObserverInstances[0].destroy();
 	}
 }
-
 
 export default ScrollObserver;
