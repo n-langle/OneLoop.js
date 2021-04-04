@@ -23,7 +23,7 @@ MainLoopEntry.defaults = {
 };
 
 assign(MainLoopEntry.prototype, {
-	start: function(delay, tweenLastValue) {
+	start: function(delay, onStartAdditionalParameter) {
 		if (delay !== 0 && !delay) {
 			delay = this.delay;
 		}
@@ -31,9 +31,9 @@ assign(MainLoopEntry.prototype, {
 		if (delay === 0) {
 			this._startTime = performance.now();
 			this._mainLoop.add(this);
-			this.onStart(this._startTime, 0, tweenLastValue);
+			this.onStart(this._startTime, 0, onStartAdditionalParameter);
 		} else {
-			setTimeout(this.start.bind(this, 0, tweenLastValue), delay);
+			setTimeout(this.start.bind(this, 0, onStartAdditionalParameter), delay);
 		}
 
 		return this;

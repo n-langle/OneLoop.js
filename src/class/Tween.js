@@ -5,38 +5,41 @@ import easings from '../object/easings';
 
 
 function Tween(options) {
+	this._startValue = 0;
 	MainLoopEntry.call(this, assign({}, Tween.defaults, options));
-	this._lastValue = 0;
 }
 
 Tween.defaults = {
 	duration: 1000,
 	easing: 'linear',
 	loop: 0,
-	reverse: false
+	yoyo: false
 };
 
 assign(Tween.prototype, 
 	MainLoopEntry.prototype, {
 
 	start: function(delay) {
-		return MainLoopEntry.prototype.start.call(this, delay, this._lastValue);
-	},	
+		return MainLoopEntry.prototype.start.call(this, delay, this._startValue);
+	},
 
 	update: function(timestamp, tick) {
-		this.onUpdate(timestamp, tick, Math.abs(this._lastValue - easings[this.easing]((timestamp - this._startTime) / this.duration)));
+		var e = easings[this.easing]((timestamp - this._startTime) / this.duration),
+			p = this._startValue === 0 ? e : 1 - e;
+
+		this.onUpdate(timestamp, tick, p);
 		return this;
 	},
 
 	complete: function(timestamp, tick) {
-		var value = Math.abs(this._lastValue - 1);
+		var lastValue = this._startValue === 0 ? 1 : 0;
 
-		if (this.reverse) {
-			this._lastValue = value;
+		this.onUpdate(timestamp, tick, lastValue);
+		this.onComplete(timestamp, tick, lastValue);
+
+		if (this.yoyo) {
+			this._startValue = lastValue;
 		}
-
-		this.onUpdate(timestamp, tick, value);
-		this.onComplete(timestamp, tick, value);
 
 		if (this.loop > 0) {
 			this.loop--;
