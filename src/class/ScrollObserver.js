@@ -90,7 +90,7 @@ assign(ScrollObserver.prototype,
 	},
 
 	needsUpdate: function(timestamp) {
-		return this._scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageXOffset - this._lastScrollY) > 1;
+		return this._scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageYOffset - this._lastScrollY) > 1;
 	},
 
 	getScrollInfos: function() {
