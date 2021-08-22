@@ -29,61 +29,61 @@ export default (function() {
 	}
 
 	return {
-		linear(x) {
+		linear: function(x) {
 			return x;
 		},
-		easeInQuad(x) {
+		easeInQuad: function(x) {
 			return x * x;
 		},
-		easeOutQuad(x) {
+		easeOutQuad: function(x) {
 			return 1 - (1 - x) * (1 - x);
 		},
-		easeInOutQuad(x) {
+		easeInOutQuad: function(x) {
 			return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
 		},
-		easeInCubic(x) {
+		easeInCubic: function(x) {
 			return x * x * x;
 		},
-		easeOutCubic(x) {
+		easeOutCubic: function(x) {
 			return 1 - pow(1 - x, 3);
 		},
-		easeInOutCubic(x) {
+		easeInOutCubic: function(x) {
 			return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2;
 		},
-		easeInQuart(x) {
+		easeInQuart: function(x) {
 			return x * x * x * x;
 		},
-		easeOutQuart(x) {
+		easeOutQuart: function(x) {
 			return 1 - pow(1 - x, 4);
 		},
-		easeInOutQuart(x) {
+		easeInOutQuart: function(x) {
 			return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2;
 		},
-		easeInQuint(x) {
+		easeInQuint: function(x) {
 			return x * x * x * x * x;
 		},
-		easeOutQuint(x) {
+		easeOutQuint: function(x) {
 			return 1 - pow(1 - x, 5);
 		},
-		easeInOutQuint(x) {
+		easeInOutQuint: function(x) {
 			return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2;
 		},
-		easeInSine(x) {
+		easeInSine: function(x) {
 			return 1 - cos((x * PI) / 2);
 		},
-		easeOutSine(x) {
+		easeOutSine: function(x) {
 			return sin((x * PI) / 2);
 		},
-		easeInOutSine(x) {
+		easeInOutSine: function(x) {
 			return -(cos(PI * x) - 1) / 2;
 		},
-		easeInExpo(x) {
+		easeInExpo: function(x) {
 			return x === 0 ? 0 : pow(2, 10 * x - 10);
 		},
-		easeOutExpo(x) {
+		easeOutExpo: function(x) {
 			return x === 1 ? 1 : 1 - pow(2, -10 * x);
 		},
-		easeInOutExpo(x) {
+		easeInOutExpo: function(x) {
 			return x === 0
 				? 0
 				: x === 1
@@ -92,43 +92,43 @@ export default (function() {
 				? pow(2, 20 * x - 10) / 2
 				: (2 - pow(2, -20 * x + 10)) / 2;
 		},
-		easeInCirc(x) {
+		easeInCirc: function(x) {
 			return 1 - sqrt(1 - pow(x, 2));
 		},
-		easeOutCirc(x) {
+		easeOutCirc: function(x) {
 			return sqrt(1 - pow(x - 1, 2));
 		},
-		easeInOutCirc(x) {
+		easeInOutCirc: function(x) {
 			return x < 0.5
 				? (1 - sqrt(1 - pow(2 * x, 2))) / 2
 				: (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2;
 		},
-		easeInBack(x) {
+		easeInBack: function(x) {
 			return c3 * x * x * x - c1 * x * x;
 		},
-		easeOutBack(x) {
+		easeOutBack: function(x) {
 			return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
 		},
-		easeInOutBack(x) {
+		easeInOutBack: function(x) {
 			return x < 0.5
 				? (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
 				: (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
 		},
-		easeInElastic(x) {
+		easeInElastic: function(x) {
 			return x === 0
 				? 0
 				: x === 1
 				? 1
 				: -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
 		},
-		easeOutElastic(x) {
+		easeOutElastic: function(x) {
 			return x === 0
 				? 0
 				: x === 1
 				? 1
 				: pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
 		},
-		easeInOutElastic(x) {
+		easeInOutElastic: function(x) {
 			return x === 0
 				? 0
 				: x === 1
@@ -137,11 +137,11 @@ export default (function() {
 				? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2
 				: (pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5)) / 2 + 1;
 		},
-		easeInBounce(x) {
+		easeInBounce: function(x) {
 			return 1 - bounceOut(1 - x);
 		},
 		easeOutBounce: bounceOut,
-		easeInOutBounce(x) {
+		easeInOutBounce: function(x) {
 			return x < 0.5
 				? (1 - bounceOut(1 - 2 * x)) / 2
 				: (1 + bounceOut(2 * x - 1)) / 2;
