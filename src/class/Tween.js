@@ -1,6 +1,5 @@
 import MainLoopEntry from './MainLoopEntry';
 import assign from '../function/assign';
-import noop from '../function/noop';
 import easings from '../object/easings';
 
 
