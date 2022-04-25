@@ -3,7 +3,7 @@ import rollupManglePrivateProperties from './rollup/rollup-mangle-private-proper
 
 export default {
   input: 'src/main.js',
-  plugins: [rollupBundleWrapper],//, rollupManglePrivateProperties],
+  plugins: [rollupBundleWrapper, rollupManglePrivateProperties],
   output: {
     file: 'build/bundle.js',
     format: 'cjs'

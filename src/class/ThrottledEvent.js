@@ -4,14 +4,6 @@ import assign from '../function/assign';
 var throttledEventInstances = [];
 
 function ThrottledEvent(target, eventType) {
-	var oldInstance = getThrottledEventInstance(target, eventType);
-
-	if (oldInstance) {
-		return oldInstance;
-	} else {
-		addToThrottledEventInstances(this, target, eventType);
-	}
-
 	MainLoopEntry.call(this, {autoStart: false});
 	
 	var events = {}
@@ -37,7 +29,14 @@ assign(ThrottledEvent.prototype,
 	MainLoopEntry.prototype, {
 
 	destroy: function() {
-		removeFromThrottledEventInstances(this._target, this._eventType);
+		var i;
+
+		for (i = 0; i < throttledEventInstances.length; i++) {
+			if (throttledEventInstances[i].instance === this) {
+				throttledEventInstances.splice(i, 1);
+			}
+		}
+
 		this._target.removeEventListener(this._eventType, this._onEvent);
 	},
 
@@ -71,6 +70,28 @@ assign(ThrottledEvent.prototype,
 		return this._needsUpdate;
 	}
 });
+
+ThrottledEvent.getInstance = function(target, eventType) {
+	var instance, i;
+
+	for (i = 0; i < throttledEventInstances.length; i++) {
+		if (throttledEventInstances[i].eventType === eventType && throttledEventInstances[i].target === target) {
+			instance = throttledEventInstances[i].instance;
+		}
+	}
+
+	if (!instance) {
+		instance = new ThrottledEvent(target, eventType);
+		
+		throttledEventInstances.push({
+			instance: instance,
+			target: target,
+			eventType: eventType
+		});
+	}
+
+	return instance;
+}
 
 ThrottledEvent.destroy = function() {
 	while (throttledEventInstances.length) {
@@ -107,39 +128,6 @@ function onEvent(e) {
 
 	clearTimeout(this._timer);
 	this._timer = setTimeout(this._reset, 128);
-}
-
-// ----
-// throttledEventInstances
-// ----
-function addToThrottledEventInstances(instance, target, eventType) {
-	throttledEventInstances.push({
-		instance: instance,
-		target: target,
-		eventType: eventType
-	});
-}
-
-function removeFromThrottledEventInstances(target, eventType) {
-	var i;
-
-	for (i = 0; i < throttledEventInstances.length; i++) {
-		if (throttledEventInstances[i].eventType === eventType && throttledEventInstances[i].target === target) {
-			throttledEventInstances.splice(i, 1);
-		}
-	}
-}
-
-function getThrottledEventInstance(target, eventType) {
-	var i;
-
-	for (i = 0; i < throttledEventInstances.length; i++) {
-		if (throttledEventInstances[i].eventType === eventType && throttledEventInstances[i].target === target) {
-			return throttledEventInstances[i].instance;
-		}
-	}
-
-	return null;
 }
 
 export default ThrottledEvent;
