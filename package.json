@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "concurrently --names \"ROLLUP,HTTP\" -c \"bgBlue.bold,bgRed.bold\" \"rollup -c -w rollup.config.js\" \"http-server --proxy http://localhost:8080/test/\"%",
-    "build": "rollup -c rollup.config.js && google-closure-compiler --js build/bundle.js --js_output_file build/bundle.min.js",
+    "build": "rollup -c rollup.config.js && rollup -c rollup.config.js --environment BUILD:production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,8 +14,8 @@
   "dependencies": {},
   "devDependencies": {
     "concurrently": "^5.3.0",
-    "google-closure-compiler": "^20200719.0.0",
     "http-server": "^0.12.3",
-    "rollup": "^2.23.1"
+    "rollup": "^2.23.1",
+    "rollup-plugin-uglify": "^6.0.4"
   }
 }

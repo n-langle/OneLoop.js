@@ -1,6 +1,3 @@
-/*
- * source: https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
- */
 export default (function() {
 	var pow = Math.pow;
 	var sqrt = Math.sqrt;
