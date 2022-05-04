@@ -23,14 +23,17 @@ ScrollObserverEntry.defaults = {
 
 assign(ScrollObserverEntry.prototype, {
 	refresh: function(scroll) {
-		var bounding = this.element.getBoundingClientRect();
-		var scrollY = window.pageYOffset;
-		var height = window.innerHeight;
-		this.distance = height + bounding.bottom - bounding.top;
-		this.start = bounding.bottom - this.distance + scrollY;
+		var bounding = this.element.getBoundingClientRect(),
+			scrollY = window.pageYOffset,
+			height = window.innerHeight;
+		
+		// start and distance Relative To Window 
+		this.distanceRTW = height + bounding.bottom - bounding.top;
+		this.startRTW = bounding.bottom - this.distanceRTW + scrollY;
 
-		this.realStart = Math.max(bounding.top + scrollY - height, 0);
-		this.realDistance = Math.min(bounding.bottom + scrollY - this.realStart, document.documentElement.scrollHeight - height);
+		// start end distance Relative To Element
+		this.startRTE = Math.max(bounding.top + scrollY - height, 0);
+		this.distanceRTE = Math.min(bounding.bottom + scrollY - this.startRTE, document.documentElement.scrollHeight - height);
 
 		this.boundingClientRect = bounding;
 
@@ -40,8 +43,8 @@ assign(ScrollObserverEntry.prototype, {
 	},
 
 	control: function(scroll) {
-		var p1 = (scroll.y - this.start) / this.distance,
-			p2 = (scroll.y - this.realStart) / this.realDistance;
+		var p1 = (scroll.y - this.startRTW) / this.distanceRTW,
+			p2 = (scroll.y - this.startRTE) / this.distanceRTE;
 
 		if (p1 >= 0 && p1 <= 1) {
 			if (!this._isVisible) {
