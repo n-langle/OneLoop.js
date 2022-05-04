@@ -6,7 +6,7 @@ const plugins = [];
 let fileName = 'OneLoop';
 
 if (process.env.BUILD === 'production') {
-    fileName += '.min' ;
+    fileName += '.min';
     plugins.push(rollupManglePrivateProperties);
     plugins.push(uglify({
         toplevel: true
