@@ -4,130 +4,130 @@ import assign from '../function/assign';
 var throttledEventInstances = [];
 
 function ThrottledEvent(target, eventType) {
-	MainLoopEntry.call(this, {autoStart: false});
-	
-	var events = {}
+    MainLoopEntry.call(this, {autoStart: false});
+    
+    var events = {}
 
-	events[eventType + 'start'] = [];
-	events[eventType] = [];
-	events[eventType + 'end'] = [];
+    events[eventType + 'start'] = [];
+    events[eventType] = [];
+    events[eventType + 'end'] = [];
 
-	this._events = events;
+    this._events = events;
 
-	this._needsUpdate = false;
-	this._reset = reset.bind(this);
-	this._onEvent = onEvent.bind(this);
-	this._timer = null;
-	this._target = target;
-	this._eventType = eventType;
-	this._event = null;
+    this._needsUpdate = false;
+    this._reset = reset.bind(this);
+    this._onEvent = onEvent.bind(this);
+    this._timer = null;
+    this._target = target;
+    this._eventType = eventType;
+    this._event = null;
 
-	this._target.addEventListener(this._eventType, this._onEvent);
+    this._target.addEventListener(this._eventType, this._onEvent);
 }
 
 assign(ThrottledEvent.prototype, 
-	MainLoopEntry.prototype, {
+    MainLoopEntry.prototype, {
 
-	destroy: function() {
-		var i;
+    destroy: function() {
+        var i;
 
-		for (i = 0; i < throttledEventInstances.length; i++) {
-			if (throttledEventInstances[i].instance === this) {
-				throttledEventInstances.splice(i, 1);
-			}
-		}
+        for (i = 0; i < throttledEventInstances.length; i++) {
+            if (throttledEventInstances[i].instance === this) {
+                throttledEventInstances.splice(i, 1);
+            }
+        }
 
-		this._target.removeEventListener(this._eventType, this._onEvent);
-	},
+        this._target.removeEventListener(this._eventType, this._onEvent);
+    },
 
-	add: function(when, callback) {
-		if (this._events[when].indexOf(callback) === -1) {
-			this._events[when].push(callback);
-		}
+    add: function(when, callback) {
+        if (this._events[when].indexOf(callback) === -1) {
+            this._events[when].push(callback);
+        }
 
-		return this;
-	},
+        return this;
+    },
 
-	remove: function(when, callback) {
-		var index = this._events[when].indexOf(callback)
-		if (index > -1) {
-			this._events[when].splice(index, 1);
-		}
-		return this;
-	},
+    remove: function(when, callback) {
+        var index = this._events[when].indexOf(callback)
+        if (index > -1) {
+            this._events[when].splice(index, 1);
+        }
+        return this;
+    },
 
-	update: function(timestamp, tick) {
-		callCallbacks(this._events[this._eventType], this._event);
-		return this;
-	},
+    update: function(timestamp, tick) {
+        callCallbacks(this._events[this._eventType], this._event);
+        return this;
+    },
 
-	complete: function(timestamp, tick) {
-		callCallbacks(this._events[this._eventType + 'end'], this._event);
-		return this;
-	},
+    complete: function(timestamp, tick) {
+        callCallbacks(this._events[this._eventType + 'end'], this._event);
+        return this;
+    },
 
-	needsUpdate: function(timestamp) {
-		return this._needsUpdate;
-	}
+    needsUpdate: function(timestamp) {
+        return this._needsUpdate;
+    }
 });
 
 ThrottledEvent.getInstance = function(target, eventType) {
-	var instance, i;
+    var instance, i;
 
-	for (i = 0; i < throttledEventInstances.length; i++) {
-		if (throttledEventInstances[i].eventType === eventType && throttledEventInstances[i].target === target) {
-			instance = throttledEventInstances[i].instance;
-		}
-	}
+    for (i = 0; i < throttledEventInstances.length; i++) {
+        if (throttledEventInstances[i].eventType === eventType && throttledEventInstances[i].target === target) {
+            instance = throttledEventInstances[i].instance;
+        }
+    }
 
-	if (!instance) {
-		instance = new ThrottledEvent(target, eventType);
-		
-		throttledEventInstances.push({
-			instance: instance,
-			target: target,
-			eventType: eventType
-		});
-	}
+    if (!instance) {
+        instance = new ThrottledEvent(target, eventType);
+        
+        throttledEventInstances.push({
+            instance: instance,
+            target: target,
+            eventType: eventType
+        });
+    }
 
-	return instance;
+    return instance;
 }
 
 ThrottledEvent.destroy = function() {
-	while (throttledEventInstances.length) {
-		throttledEventInstances[0].instance.destroy()
-	}
+    while (throttledEventInstances.length) {
+        throttledEventInstances[0].instance.destroy()
+    }
 }
 
 // ----
 // utils
 // ----
 function reset() {
-	this._needsUpdate = false;
+    this._needsUpdate = false;
 }
 
 function callCallbacks(array, e) {
-	var i = 0;
+    var i = 0;
 
-	for (; i < array.length; i++) {
-		array[i](e);
-	}
+    for (; i < array.length; i++) {
+        array[i](e);
+    }
 }
 
 // ----
 // event
 // ----
 function onEvent(e) {
-	this._event = e;
+    this._event = e;
 
-	if (!this._needsUpdate) {
-		this._needsUpdate = true;
-		this.start();
-		callCallbacks(this._events[this._eventType + 'start'], e);
-	}
+    if (!this._needsUpdate) {
+        this._needsUpdate = true;
+        this.start();
+        callCallbacks(this._events[this._eventType + 'start'], e);
+    }
 
-	clearTimeout(this._timer);
-	this._timer = setTimeout(this._reset, 128);
+    clearTimeout(this._timer);
+    this._timer = setTimeout(this._reset, 128);
 }
 
 export default ThrottledEvent;

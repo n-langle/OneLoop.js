@@ -16,10 +16,10 @@ if (process.env.BUILD === 'production') {
 plugins.push(rollupInsertInformations);
 
 export default {
-  input: 'src/main.js',
-  plugins: plugins,
-  output: {
-    file: 'build/' + fileName + '.js',
-    format: 'es'
-  }
+    input: 'src/main.js',
+    plugins: plugins,
+    output: {
+        file: 'build/' + fileName + '.js',
+        format: 'es'
+    }
 };
