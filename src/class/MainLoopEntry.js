@@ -1,11 +1,10 @@
-import MainLoop from './MainLoop';
+import mainLoop from '../object/mainLoop';
 import assign from '../function/assign';
 import noop from '../function/noop';
 
 function MainLoopEntry(options) {
 	assign(this, MainLoopEntry.defaults, options);
 
-	this._mainLoop = new MainLoop();
 	this._startTime = 0;
 
 	if (this.autoStart) {
@@ -30,7 +29,7 @@ assign(MainLoopEntry.prototype, {
 
 		if (delay === 0) {
 			this._startTime = performance.now();
-			this._mainLoop.add(this);
+			mainLoop.add(this);
 			this.onStart(this._startTime, 0, onStartAdditionalParameter);
 		} else {
 			setTimeout(this.start.bind(this, 0, onStartAdditionalParameter), delay);
@@ -40,7 +39,7 @@ assign(MainLoopEntry.prototype, {
 	},
 
 	stop: function() {
-		this._mainLoop.remove(this);
+		mainLoop.remove(this);
 		this.onStop();
 		return this;
 	},
