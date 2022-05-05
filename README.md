@@ -3,7 +3,7 @@ OneLoop.js
 
 The aim of the project is to create an easy to use, lightweight, cross-browser, animation library. The following documentation is not exhaustive, but provide the basic informations to use the library. Take a look at the code if you want to know more.
 
-### ScrollObserver ###
+## ScrollObserver
 
 This code will create a scroll observer :
 
@@ -19,14 +19,14 @@ scrollObserver.observe('.css-selector', {
 });
 ```
 
-#### Options ####
+### Options
 ```javascript
 const scrollObserver = new ScrollObserver({
     scrollDivider: 2, // default: 1, smooth the scroll value
 });
 ```
 
-#### Methods ####
+### Methods
 ```javascript
 /**
  * observe
@@ -77,7 +77,7 @@ scrollObserver.unobserve(element);
 scrollObserver.destroy();
 ```
 
-### Tween ###
+## Tween
 
 This code will create a tween :
 
@@ -91,7 +91,7 @@ new Tween({
 });
 ```
 
-#### Options ####
+### Options
 ```javascript
 const tween = new Tween({
     delay: 500,             // default: 0,
@@ -115,7 +115,7 @@ const tween = new Tween({
 });
 ```
 
-#### Methods ####
+### Methods
 ```javascript
 /**
  * start (reverse at each call if option reverse is set to true)
@@ -131,7 +131,7 @@ tween.start(delay);
 tween.stop();
 ```
 
-### ThrottledEvent ###
+## ThrottledEvent
 
 This code will create a throttled/debounced event :
 
@@ -163,7 +163,7 @@ const resize1 = ThrottledEvent.getInstance(window, 'scroll');
 const resize2 = ThrottledEvent.getInstance(window, 'scroll'); // this will return the instance resize1
 ```
 
-#### Options ####
+### Options
 ```javascript
 /**
  * constructor
@@ -174,7 +174,7 @@ const resize2 = ThrottledEvent.getInstance(window, 'scroll'); // this will retur
 const throttledEvent = new ThrottledEvent(element, eventType);
 ```
 
-#### Methods ####
+### Methods
 ```javascript
 /**
  * add
@@ -199,7 +199,7 @@ throttledEvent.remove(eventPhase, callback);
 throttledEvent.destroy();
 ```
 
-### easings ###
+## easings
 
 Set of easings functions, credit goes to [ai/easings.net](https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts)
 
