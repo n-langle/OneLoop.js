@@ -16,7 +16,13 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/n-langle/OneLoop.js"
-      },
+    },
+    "bugs": {
+        "url": "https://github.com/n-langle/OneLoop.js/issues"
+    },
+    "publishConfig": {
+        "@n-langle:registry": "https://npm.pkg.github.com"
+    },
     "dependencies": {},
         "devDependencies": {
         "concurrently": "^5.3.0",
