@@ -57,12 +57,12 @@ assign(ThrottledEvent.prototype,
     },
 
     update: function(timestamp, tick) {
-        callCallbacks(this._events[this._eventType], this._event);
+        dispatch(this._events[this._eventType], this._event);
         return this;
     },
 
     complete: function(timestamp, tick) {
-        callCallbacks(this._events[this._eventType + 'end'], this._event);
+        dispatch(this._events[this._eventType + 'end'], this._event);
         return this;
     },
 
@@ -106,7 +106,7 @@ function reset() {
     this._needsUpdate = false;
 }
 
-function callCallbacks(array, e) {
+function dispatch(array, e) {
     var i = 0;
 
     for (; i < array.length; i++) {
@@ -123,7 +123,7 @@ function onEvent(e) {
     if (!this._needsUpdate) {
         this._needsUpdate = true;
         this.start();
-        callCallbacks(this._events[this._eventType + 'start'], e);
+        dispatch(this._events[this._eventType + 'start'], e);
     }
 
     clearTimeout(this._timer);
