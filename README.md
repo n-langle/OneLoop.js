@@ -1,8 +1,9 @@
 OneLoop.js
-========
+==========
 
 The aim of the project is to create an easy to use, lightweight, cross-browser, animation library. The following documentation is not exhaustive, but provide the basic informations to use the library. Take a look at the code if you want to know more.
 
+======================
 ### ScrollObserver ###
 
 This code will create a scroll observer :
@@ -77,6 +78,7 @@ scrollObserver.unobserve(element);
 scrollObserver.destroy();
 ```
 
+=============
 ### Tween ###
 
 This code will create a tween :
@@ -131,6 +133,7 @@ tween.start(delay);
 tween.stop();
 ```
 
+======================
 ### ThrottledEvent ###
 
 This code will create a throttled/debounced event :
@@ -199,6 +202,7 @@ throttledEvent.remove(eventPhase, callback);
 throttledEvent.destroy();
 ```
 
+===============
 ### easings ###
 
 Set of easings functions, credit goes to [ai/easings.net](https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts)
