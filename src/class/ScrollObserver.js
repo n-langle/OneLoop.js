@@ -4,8 +4,10 @@ import MainLoopEntry from '../class/MainLoopEntry';
 import ThrottledEvent from '../class/ThrottledEvent';
 import ScrollObserverEntry from '../class/ScrollObserverEntry';
 
-var scrollObserverInstances = [],
-    scrollObserverAutoRefreshTimer = null;
+var instances = [],
+    autoRefreshTimer = null,
+    resize = null,
+    scroll = null;
 
 function ScrollObserver(options) {
     MainLoopEntry.call(this, assign({}, ScrollObserver.defaults, options, {autoStart: false}));
@@ -16,14 +18,16 @@ function ScrollObserver(options) {
     this._onResize = this.refresh.bind(this);
     this._lastScrollY = 0;
 
-    this._resize = new ThrottledEvent(window, 'resize');
-    this._scroll = new ThrottledEvent(window, 'scroll');
+    if (instances.length === 0) {
+        resize = new ThrottledEvent(window, 'resize');
+        scroll = new ThrottledEvent(window, 'scroll');
+    }
 
-    this._resize.add('resize', this._onResize);
-    this._scroll.add('scrollstart', this._onScroll);
+    resize.add('resize', this._onResize);
+    scroll.add('scrollstart', this._onScroll);
 
-    scrollObserverInstances.push(this);
-    ScrollObserver.startAutoRefresh()
+    instances.push(this);
+    ScrollObserver.startAutoRefresh();
 }
 
 ScrollObserver.defaults = {
@@ -34,12 +38,16 @@ assign(ScrollObserver.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-        this._scroll.remove('scrollstart', this._onScroll);
-        this._resize.remove('resize', this._onResize);
-        scrollObserverInstances.splice(scrollObserverInstances.indexOf(this),  1);
+        instances.splice(instances.indexOf(this),  1);
 
-        if (scrollObserverInstances.length === 0) {
-            ScrollObserver.stopAutoRefresh()
+        if (instances.length === 0) {
+            ScrollObserver.stopAutoRefresh();
+            resize.destroy();
+            scroll.destroy();
+            resize = scroll = null;
+        } else {
+            resize.remove('resize', this._onResize);
+            scroll.remove('scrollstart', this._onScroll);
         }
     },
 
@@ -90,7 +98,7 @@ assign(ScrollObserver.prototype,
     },
 
     needsUpdate: function(timestamp) {
-        return this._scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageYOffset - this._lastScrollY) > 1;
+        return scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageYOffset - this._lastScrollY) > 1;
     },
 
     getScrollInfos: function() {
@@ -105,11 +113,11 @@ assign(ScrollObserver.prototype,
     },
 
     refresh: function() {
-        var scroll = this.getScrollInfos(),
+        var scrollInfos = this.getScrollInfos(),
             i;
     
         for (i = 0; i < this._entries.length; i++) {
-            this._entries[i].refresh(scroll);
+            this._entries[i].refresh(scrollInfos);
         }
 
         return this;
@@ -132,16 +140,16 @@ function getDocumentHeight() {
 ScrollObserver.autoRefreshDelay = 1000;
 
 ScrollObserver.startAutoRefresh = function() {
-    if (scrollObserverAutoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
+    if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
         var lastDocumentHeight = getDocumentHeight();
 
-        scrollObserverAutoRefreshTimer = setInterval(function() {
+        autoRefreshTimer = setInterval(function() {
             var height = getDocumentHeight(),
                 i;
 
             if ( height !== lastDocumentHeight) {
-                for (i = 0; i < scrollObserverInstances.length; i++) {
-                    scrollObserverInstances[i].refresh();
+                for (i = 0; i < instances.length; i++) {
+                    instances[i].refresh();
                 }
                 lastDocumentHeight = height;
             }
@@ -151,14 +159,14 @@ ScrollObserver.startAutoRefresh = function() {
 }
 
 ScrollObserver.stopAutoRefresh = function() {
-    clearInterval(scrollObserverAutoRefreshTimer);
-    scrollObserverAutoRefreshTimer = null;
+    clearInterval(autoRefreshTimer);
+    autoRefreshTimer = null;
     return this;
 }
 
 ScrollObserver.destroy = function() {
-    while(scrollObserverInstances.length) {
-        scrollObserverInstances[0].destroy();
+    while(instances.length) {
+        instances[0].destroy();
     }
 }
 
