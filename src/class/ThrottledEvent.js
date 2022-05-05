@@ -1,7 +1,7 @@
 import MainLoopEntry from './MainLoopEntry';
 import assign from '../function/assign';
 
-var throttledEventInstances = [];
+var instances = [];
 
 function ThrottledEvent(target, eventType) {
     MainLoopEntry.call(this, {autoStart: false});
@@ -31,9 +31,9 @@ assign(ThrottledEvent.prototype,
     destroy: function() {
         var i;
 
-        for (i = 0; i < throttledEventInstances.length; i++) {
-            if (throttledEventInstances[i].instance === this) {
-                throttledEventInstances.splice(i, 1);
+        for (i = 0; i < instances.length; i++) {
+            if (instances[i].instance === this) {
+                instances.splice(i, 1);
             }
         }
 
@@ -74,16 +74,16 @@ assign(ThrottledEvent.prototype,
 ThrottledEvent.getInstance = function(target, eventType) {
     var instance, i;
 
-    for (i = 0; i < throttledEventInstances.length; i++) {
-        if (throttledEventInstances[i].eventType === eventType && throttledEventInstances[i].target === target) {
-            instance = throttledEventInstances[i].instance;
+    for (i = 0; i < instances.length; i++) {
+        if (instances[i].eventType === eventType && instances[i].target === target) {
+            instance = instances[i].instance;
         }
     }
 
     if (!instance) {
         instance = new ThrottledEvent(target, eventType);
         
-        throttledEventInstances.push({
+        instances.push({
             instance: instance,
             target: target,
             eventType: eventType
@@ -94,8 +94,8 @@ ThrottledEvent.getInstance = function(target, eventType) {
 }
 
 ThrottledEvent.destroy = function() {
-    while (throttledEventInstances.length) {
-        throttledEventInstances[0].instance.destroy()
+    while (instances.length) {
+        instances[0].instance.destroy()
     }
 }
 
