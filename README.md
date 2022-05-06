@@ -1,6 +1,8 @@
 OneLoop.js
 ==========
 
+[![NPM Package][npm]][npm-url]
+
 The aim of the project is to create an easy to use, lightweight, cross-browser, animation library. The following documentation is not exhaustive, but provide the basic informations to use the library. Take a look at the code if you want to know more.
 
 ## ScrollObserver
@@ -249,3 +251,6 @@ easings.easeInBounce();
 easings.easeOutBounce();
 easings.easeInOutBounce();
 ```
+
+[npm]: https://img.shields.io/npm/v/oneloop.js
+[npm-url]: https://www.npmjs.com/package/oneloop.js
