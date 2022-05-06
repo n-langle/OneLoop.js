@@ -23,6 +23,15 @@
     "publishConfig": {
         "@n-langle:registry": "https://npm.pkg.github.com"
     },
+    "keywords": [
+        "oneloop",
+        "front-end",
+        "javascript",
+        "web",
+        "animation",
+        "easings",
+        "tween"
+      ],
     "dependencies": {},
         "devDependencies": {
         "concurrently": "^5.3.0",
