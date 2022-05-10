@@ -215,6 +215,7 @@ throttledEvent.destroy();
 
 ## SplittedText
 
+SplittedText support emoji, credit for the emoji regexp goes to [Kevin Scott](https://medium.com/reactnative/emojis-in-javascript-f693d0eb79fb).
 This will split a text into line, word or/and char
 
 ```javascript
