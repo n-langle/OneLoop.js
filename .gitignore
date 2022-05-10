@@ -1,5 +1,6 @@
 .DS_Store
 .vscode
+build/*.gz
 node_modules
 test
 package-lock.json
