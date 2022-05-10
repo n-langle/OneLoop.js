@@ -229,7 +229,7 @@ const splittedText = new SplittedText(element, { byWord: true });
 const splittedText = new SplittedText({
     autoSplit: false,       // default: true, split the text in the constructor
     byLine: false,          // default: false, split the content by line
-    byWord: false,          // default: false, split the content by word (the text will be splitted by word byLine is set to true, even if byWord is set to false)
+    byWord: false,          // default: false, split the content by word (the text will be splitted by word if byLine is set to true, even if byWord is set to false)
     byChar: false,          // default: false, split the text by char
     preserve: 'st-char',    // default: st-char, must be equal to the class used in charWrapper function
     lineWrapper: function(line) {
