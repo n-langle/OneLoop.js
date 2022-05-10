@@ -56,6 +56,13 @@ assign(ThrottledEvent.prototype,
         return this;
     },
 
+    hasEvent: function() {
+        var events = this._events,
+            eventType = this._eventType;
+
+        return events[eventType + 'start'].length + events[eventType].length + events[eventType + 'end'].length > 0;
+    },
+
     update: function(timestamp, tick) {
         dispatch(this._events[this._eventType], this._event);
         return this;

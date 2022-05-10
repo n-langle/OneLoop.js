@@ -12,6 +12,7 @@ export default {
 * SPDX-License-Identifier: ${ license }
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
+* Credit for Emoji regexp goes to : https://medium.com/reactnative/emojis-in-javascript-f693d0eb79fb
 */
 ${ code }`;
     }

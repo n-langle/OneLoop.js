@@ -201,10 +201,67 @@ throttledEvent.add(eventPhase, callback);
 throttledEvent.remove(eventPhase, callback);
 
 /**
+ * hasEvent - test if an event phase has been added
+ * @return bool 
+ */
+throttledEvent.hasEvent();
+
+/**
  * destroy
  * @return undefined
  */
 throttledEvent.destroy();
+```
+
+## SplittedText
+
+This will split a text into line, word or/and char
+
+```javascript
+import { SplittedText } from './build/OneLoop.min.js';
+
+const splittedText = new SplittedText(element, { byWord: true });
+```
+
+### Options
+```javascript
+const splittedText = new SplittedText({
+    autoSplit: false,       // default: true, split the text in the constructor
+    byLine: false,          // default: false, split the content by line
+    byWord: false,          // default: false, split the content by word (the text will be splitted by word byLine is set to true, even if byWord is set to false)
+    byChar: false,          // default: false, split the text by char
+    preserve: 'st-char',    // default: st-char, must be equal to the class used in charWrapper function
+    lineWrapper: function(line) {
+        return '<span class="st-line">' + line + '</span>';
+    },
+    wordWrapper: function(word) {
+        return '<span class="st-word">' + word + '</span>';
+    },
+    charWrapper: function(char) {
+        return '<span class="st-char">' + char + '</span>';
+    },
+});
+```
+
+### Methods
+```javascript
+/**
+ * restore
+ * @return this 
+ */
+splittedText.restore();
+
+/**
+ * split
+ * @return this 
+ */
+splittedText.split();
+
+/**
+ * destroy
+ * @return undefined
+ */
+splittedText.destroy();
 ```
 
 ## easings

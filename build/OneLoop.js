@@ -3,10 +3,11 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 2.0.0
+* Version: 2.1.0
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
+* Credit for Emoji regexp goes to : https://medium.com/reactnative/emojis-in-javascript-f693d0eb79fb
 */
 var easings = (function() {
     var pow = Math.pow;
@@ -378,7 +379,7 @@ function getElements (element, context) {
     return typeof element === 'string' ? (context || document).querySelectorAll(element) : element.length >= 0 ? element : [element];
 }
 
-var instances$1 = [];
+var instances$2 = [];
 
 function ThrottledEvent(target, eventType) {
     MainLoopEntry.call(this, {autoStart: false});
@@ -408,9 +409,9 @@ assign(ThrottledEvent.prototype,
     destroy: function() {
         var i;
 
-        for (i = 0; i < instances$1.length; i++) {
-            if (instances$1[i].instance === this) {
-                instances$1.splice(i, 1);
+        for (i = 0; i < instances$2.length; i++) {
+            if (instances$2[i].instance === this) {
+                instances$2.splice(i, 1);
             }
         }
 
@@ -433,6 +434,13 @@ assign(ThrottledEvent.prototype,
         return this;
     },
 
+    hasEvent: function() {
+        var events = this._events,
+            eventType = this._eventType;
+
+        return events[eventType + 'start'].length + events[eventType].length + events[eventType + 'end'].length > 0;
+    },
+
     update: function(timestamp, tick) {
         dispatch(this._events[this._eventType], this._event);
         return this;
@@ -451,16 +459,16 @@ assign(ThrottledEvent.prototype,
 ThrottledEvent.getInstance = function(target, eventType) {
     var instance, i;
 
-    for (i = 0; i < instances$1.length; i++) {
-        if (instances$1[i].eventType === eventType && instances$1[i].target === target) {
-            instance = instances$1[i].instance;
+    for (i = 0; i < instances$2.length; i++) {
+        if (instances$2[i].eventType === eventType && instances$2[i].target === target) {
+            instance = instances$2[i].instance;
         }
     }
 
     if (!instance) {
         instance = new ThrottledEvent(target, eventType);
         
-        instances$1.push({
+        instances$2.push({
             instance: instance,
             target: target,
             eventType: eventType
@@ -471,8 +479,8 @@ ThrottledEvent.getInstance = function(target, eventType) {
 };
 
 ThrottledEvent.destroy = function() {
-    while (instances$1.length) {
-        instances$1[0].instance.destroy();
+    while (instances$2.length) {
+        instances$2[0].instance.destroy();
     }
 };
 
@@ -576,9 +584,9 @@ function round(v) {
     return Math.abs(Math.round(v));
 }
 
-var instances = [],
+var instances$1 = [],
     autoRefreshTimer = null,
-    resize = null,
+    resize$1 = null,
     scroll = null;
 
 function ScrollObserver(options) {
@@ -590,15 +598,15 @@ function ScrollObserver(options) {
     this._onResize = this.refresh.bind(this);
     this._lastScrollY = 0;
 
-    if (instances.length === 0) {
-        resize = new ThrottledEvent(window, 'resize');
+    if (instances$1.length === 0) {
+        resize$1 = new ThrottledEvent(window, 'resize');
         scroll = new ThrottledEvent(window, 'scroll');
     }
 
-    resize.add('resize', this._onResize);
+    resize$1.add('resize', this._onResize);
     scroll.add('scrollstart', this._onScroll);
 
-    instances.push(this);
+    instances$1.push(this);
     ScrollObserver.startAutoRefresh();
 }
 
@@ -610,15 +618,15 @@ assign(ScrollObserver.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-        instances.splice(instances.indexOf(this),  1);
+        instances$1.splice(instances$1.indexOf(this),  1);
 
-        if (instances.length === 0) {
+        if (instances$1.length === 0) {
             ScrollObserver.stopAutoRefresh();
-            resize.destroy();
+            resize$1.destroy();
             scroll.destroy();
-            resize = scroll = null;
+            resize$1 = scroll = null;
         } else {
-            resize.remove('resize', this._onResize);
+            resize$1.remove('resize', this._onResize);
             scroll.remove('scrollstart', this._onScroll);
         }
     },
@@ -720,8 +728,8 @@ ScrollObserver.startAutoRefresh = function() {
                 i;
 
             if ( height !== lastDocumentHeight) {
-                for (i = 0; i < instances.length; i++) {
-                    instances[i].refresh();
+                for (i = 0; i < instances$1.length; i++) {
+                    instances$1[i].refresh();
                 }
                 lastDocumentHeight = height;
             }
@@ -737,9 +745,184 @@ ScrollObserver.stopAutoRefresh = function() {
 };
 
 ScrollObserver.destroy = function() {
-    while(instances.length) {
+    while(instances$1.length) {
+        instances$1[0].destroy();
+    }
+};
+
+var instances = [],
+    resize = null,
+    emojiRegexp = new RegExp('(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])', 'g');
+
+function SplittedText(element, options) {
+    assign(this, SplittedText.defaults, options);
+
+    this._originalInnerHTML = element.innerHTML;
+    this._element = element;
+    this._onResize = null;
+
+    if (this.byLine) {
+        if (!resize) {
+            resize = new ThrottledEvent(window, 'resize');
+        }
+
+        this._onResize = onResize.bind(this);
+        resize.add('resize', this._onResize);
+    }
+
+    if (this.autoSplit) {
+        this.split();
+    }
+
+    instances.push(this);
+}
+
+SplittedText.defaults = {
+    autoSplit: true,
+    byLine: false,
+    byWord: false,
+    byChar: false,
+    preserve: 'st-char',
+    lineWrapper: function(line) {
+        return '<span class="st-line">' + line + '</span>';
+    },
+    wordWrapper: function(word) {
+        return '<span class="st-word">' + word + '</span>';
+    },
+    charWrapper: function(char) {
+        return '<span class="st-char">' + char + '</span>';
+    },
+};
+
+assign(SplittedText.prototype, {
+    destroy: function() {
+        instances.splice(instances.indexOf(this),  1);
+
+        resize.remove('resize', this._onResize);
+
+        if (!resize.hasEvent()) {
+            resize.destroy();
+            resize = null;
+        }
+
+        this.restore();
+    },
+
+    restore: function() {
+        this._element.innerHTML = this._originalInnerHTML;
+        return this;
+    },
+
+    split: function() {
+        var element = this._element,
+            that = this,
+            line = '',
+            html = '',
+            lastOffsetTop, offsetTop, children, i;
+
+        if (this.byWord || this.byLine) {
+            element.innerHTML = split(element, ' ', this.wordWrapper);
+        }
+
+        if (this.byLine) {
+            children = element.children;
+            lastOffsetTop = children[0].offsetTop;
+
+            for (i = 0; i < children.length; i++) {
+                offsetTop = children[i].offsetTop;
+
+                if (lastOffsetTop !== offsetTop) {
+                    html += this.lineWrapper(line.substring(-1)) + ' ';
+                    line = '';
+                }
+
+                lastOffsetTop = offsetTop;
+                line += children[i].outerHTML + ' ';
+            }
+
+            element.innerHTML = html + this.lineWrapper(line);
+        }
+    
+        if (this.byChar) {
+            element.innerHTML = wrapSpecialChar(element, this.charWrapper);
+            element.innerHTML = split(element, '', function(char) {
+                return char !== ' ' ? that.charWrapper(char) : ' ';
+            }, this.preserve);
+        }
+
+        return this;
+    } 
+});
+
+// ----
+// events
+// ----
+function onResize() {
+    this.restore().split();
+}
+// ----
+// utils
+// ----
+function wrapSpecialChar(element, wrap) {
+    var childNodes = element.childNodes,
+        html = '',
+        child,
+        i;
+
+    for (i = 0; i < childNodes.length; i++) {
+        child = childNodes[i];
+
+        if (child.nodeType === 3) {
+            html += child.data.replace(emojiRegexp, wrap);
+        } else if (child.nodeType === 1) {
+            html += getNewOuterHTML(child, wrapSpecialChar(child, wrap));
+        }
+    }
+    
+    return html;
+}
+
+function split(element, separator, wrap, preserve) {
+    var childNodes = element.childNodes,
+        html = '',
+        child,
+        i;
+  
+    for (i = 0; i < childNodes.length; i++) {
+        child = childNodes[i];
+
+        if (child.nodeType === 3) {
+            if (child.data.trim() !== '') {
+                html += child.data
+                    .split(separator)
+                    .map(wrap)
+                    .join(separator);
+            } else {
+                html += child.data;
+            }
+        } else if (child.nodeType === 1) {
+            if (preserve && child.classList.contains(preserve)) {
+                html += child.outerHTML;
+            } else {
+                html += getNewOuterHTML(child, split(child, separator, wrap));
+            }
+        }
+    }
+  
+    return html;
+}
+
+function getNewOuterHTML(node, strReplacement) {
+    return node.outerHTML.replace('>' + node.innerHTML + '<', '>' + strReplacement + '<');
+}
+
+// ----
+// static
+// ----
+SplittedText.destroy = function() {
+    while (instances[0]) {
         instances[0].destroy();
     }
 };
 
-export { MainLoopEntry, ScrollObserver, ThrottledEvent, Tween, easings };
+export { MainLoopEntry, ScrollObserver, SplittedText, ThrottledEvent, Tween, easings };
