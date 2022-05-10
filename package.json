@@ -31,8 +31,8 @@
         "animation",
         "easings",
         "tween",
-        "scroll observer",
-        "splitted text"
+        "scroll-observer",
+        "splitted-text"
       ],
     "dependencies": {},
         "devDependencies": {
