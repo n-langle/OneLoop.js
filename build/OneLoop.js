@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 2.1.0
+* Version: 2.1.1
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -759,15 +759,11 @@ function SplittedText(element, options) {
 
     this._originalInnerHTML = element.innerHTML;
     this._element = element;
-    this._onResize = null;
+    this._onResize = onResize.bind(this);
+    this._isSplitted = false;
 
-    if (this.byLine) {
-        if (!resize) {
-            resize = new ThrottledEvent(window, 'resize');
-        }
-
-        this._onResize = onResize.bind(this);
-        resize.add('resize', this._onResize);
+    if (!resize) {
+        resize = new ThrottledEvent(window, 'resize');
     }
 
     if (this.autoSplit) {
@@ -796,20 +792,20 @@ SplittedText.defaults = {
 
 assign(SplittedText.prototype, {
     destroy: function() {
+        this.restore();
+
         instances.splice(instances.indexOf(this),  1);
 
-        resize.remove('resize', this._onResize);
-
-        if (!resize.hasEvent()) {
+        if (!instances.length) {
             resize.destroy();
             resize = null;
         }
-
-        this.restore();
     },
 
     restore: function() {
         this._element.innerHTML = this._originalInnerHTML;
+        resize.remove('resize', this._onResize);
+
         return this;
     },
 
@@ -825,6 +821,8 @@ assign(SplittedText.prototype, {
         }
 
         if (this.byLine) {
+            resize.add('resize', this._onResize);
+
             children = element.children;
             lastOffsetTop = children[0].offsetTop;
 
