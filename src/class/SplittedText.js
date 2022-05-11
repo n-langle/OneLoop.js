@@ -67,9 +67,8 @@ assign(SplittedText.prototype, {
             lastOffsetTop, offsetTop, children, i;
 
         if (this.byWord || this.byLine) {
-            element.innerHTML = split(element, ' ', function(word) {
-                return that.wordWrapper(word.replace('<', '&lt;'));
-            });
+            element.innerHTML = preserveCode(element);
+            element.innerHTML = split(element, ' ', this.wordWrapper);
         }
 
         if (this.byLine) {
@@ -113,7 +112,7 @@ function onResize() {
 // ----
 // utils
 // ----
-function wrapSpecialChar(element, wrap) {
+function traverseNode(element, textCallback, nodeCallback) {
     var childNodes = element.childNodes,
         html = '',
         child,
@@ -123,43 +122,55 @@ function wrapSpecialChar(element, wrap) {
         child = childNodes[i];
 
         if (child.nodeType === 3) {
-            html += child.data.replace(specialCharRegExp, wrap);
+            html += textCallback(child.data);
         } else if (child.nodeType === 1) {
-            html += getNewOuterHTML(child, wrapSpecialChar(child, wrap));
+            html += nodeCallback(child);
         }
     }
     
     return html;
 }
 
-function split(element, separator, wrap, preserve) {
-    var childNodes = element.childNodes,
-        html = '',
-        child,
-        i;
-  
-    for (i = 0; i < childNodes.length; i++) {
-        child = childNodes[i];
-
-        if (child.nodeType === 3) {
-            if (child.data.trim() !== '') {
-                html += child.data
-                    .split(separator)
-                    .map(wrap)
-                    .join(separator);
-            } else {
-                html += child.data;
-            }
-        } else if (child.nodeType === 1) {
-            if (preserve && child.classList.contains(preserve)) {
-                html += child.outerHTML;
-            } else {
-                html += getNewOuterHTML(child, split(child, separator, wrap));
-            }
+function preserveCode(element) {
+    return traverseNode(
+        element,
+        function(text) {
+            return text.replace('<', '&lt;');
+        },
+        function(child) {
+            return preserveCode(child);
         }
-    }
-  
-    return html;
+    );
+}
+
+function wrapSpecialChar(element, wrap) {
+    return traverseNode(
+        element,
+        function(text) {
+            return text.replace(specialCharRegExp, wrap);
+        },
+        function(child) {
+            return getNewOuterHTML(child, wrapSpecialChar(child, wrap));
+        }
+    );
+}
+
+function split(element, separator, wrap, preserve) {
+    return traverseNode(
+        element,
+        function(text) {
+            return text.trim() !== '' ? 
+                text.split(separator).map(wrap).join(separator) 
+                : 
+                text;
+        },
+        function(child) {
+            return preserve && child.classList.contains(preserve) ?
+                child.outerHTML
+                :
+                getNewOuterHTML(child, split(child, separator, wrap));
+        }
+    )
 }
 
 function getNewOuterHTML(node, strReplacement) {
