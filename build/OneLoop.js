@@ -760,7 +760,6 @@ function SplittedText(element, options) {
     this._originalInnerHTML = element.innerHTML;
     this._element = element;
     this._onResize = onResize.bind(this);
-    this._isSplitted = false;
 
     if (!resize) {
         resize = new ThrottledEvent(window, 'resize');
