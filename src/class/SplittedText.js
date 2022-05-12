@@ -10,7 +10,7 @@ function SplittedText(element, options) {
 
     this._originalInnerHTML = element.innerHTML;
     this._element = element;
-    this._onResize = onResize.bind(this);
+    this._onResize = this.split.bind(this);
 
     if (!resize) {
         resize = new ThrottledEvent(window, 'resize');
@@ -66,9 +66,11 @@ assign(SplittedText.prototype, {
             html = '',
             lastOffsetTop, offsetTop, children, i;
 
+        element.innerHTML = this._originalInnerHTML;
+
         if (this.byWord || this.byLine) {
             element.innerHTML = preserveCode(element);
-            element.innerHTML = split(element, ' ', this.wordWrapper);
+            element.innerHTML = split(element, ' ', this.wordWrapper).replace('[<]', '&lt;');
         }
 
         if (this.byLine) {
@@ -104,12 +106,6 @@ assign(SplittedText.prototype, {
 });
 
 // ----
-// events
-// ----
-function onResize() {
-    this.restore().split();
-}
-// ----
 // utils
 // ----
 function traverseNode(element, textCallback, nodeCallback) {
@@ -135,10 +131,10 @@ function preserveCode(element) {
     return traverseNode(
         element,
         function(text) {
-            return text.replace('<', '&lt;');
+            return text.replace('<', '[<]');
         },
         function(child) {
-            return preserveCode(child);
+            return getNewOuterHTML(child, preserveCode(child));
         }
     );
 }
@@ -168,7 +164,7 @@ function split(element, separator, wrap, preserve) {
             return preserve && child.classList.contains(preserve) ?
                 child.outerHTML
                 :
-                getNewOuterHTML(child, split(child, separator, wrap));
+                getNewOuterHTML(child, split(child, separator, wrap, preserve));
         }
     )
 }
