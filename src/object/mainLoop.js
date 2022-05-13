@@ -15,9 +15,10 @@ export default {
     },
 
     remove: function(entry) {
-        var index = entries.indexOf(entry)
+        var index = entries.indexOf(entry);
+
         if (index > -1) {
-            entries.splice(index, 1)[0].stop()
+            entries.splice(index, 1);
         }
 
         return this;

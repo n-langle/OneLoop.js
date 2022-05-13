@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 2.2.1
+* Version: 2.2.2
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -176,8 +176,9 @@ var mainLoop = {
 
     remove: function(entry) {
         var index = entries.indexOf(entry);
+
         if (index > -1) {
-            entries.splice(index, 1)[0].stop();
+            entries.splice(index, 1);
         }
 
         return this;
