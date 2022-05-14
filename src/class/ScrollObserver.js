@@ -57,7 +57,7 @@ assign(ScrollObserver.prototype,
             i;
 
         for (i = 0; i < els.length; i++) {
-            if (this._elements.indexOf(element) === -1) {
+            if (this._elements.indexOf(els[i]) === -1) {
                 this._entries.push(new ScrollObserverEntry(els[i], options, scroll));
                 this._elements.push(els[i]);
             }
@@ -72,7 +72,7 @@ assign(ScrollObserver.prototype,
             i;
 
         for (i = 0; i < els.length; i++) {
-            index = this._elements.indexOf(element) 
+            index = this._elements.indexOf(els[i]);
             if (index > -1) {
                 this._elements.splice(index, 1);
                 this._entries.splice(index, 1);

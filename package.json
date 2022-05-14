@@ -1,10 +1,10 @@
 {
     "name": "oneloop.js",
-    "version": "2.2.2",
+    "version": "2.2.3",
     "description": "Javascript animation library",
     "type": "module",
-    "main": "./build/OneLoop.js",
-    "module": "./build/OneLoop.js",
+    "main": "./build/OneLoop.min.js",
+    "module": "./build/OneLoop.min.js",
     "scripts": {
         "start": "npm run dev",
         "dev": "concurrently --names \"ROLLUP,HTTP\" -c \"bgBlue.bold,bgRed.bold\" \"rollup -c -w rollup.config.js\" \"http-server --proxy http://localhost:8080/test/\"%",
