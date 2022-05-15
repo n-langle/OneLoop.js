@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 2.2.3
+* Version: 2.2.4
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -408,13 +408,11 @@ assign(ThrottledEvent.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-        var i;
+		var index = instances.indexOf(this);
 
-        for (i = 0; i < instances.length; i++) {
-            if (instances[i].instance === this) {
-                instances.splice(i, 1);
-            }
-        }
+		if (index > -1) {
+			instances.splice(index,  1);
+		}
 
         this._target.removeEventListener(this._eventType, this._onEvent);
     },
@@ -461,27 +459,24 @@ ThrottledEvent.getInstance = function(target, eventType) {
     var instance, i;
 
     for (i = 0; i < instances.length; i++) {
-        if (instances[i].eventType === eventType && instances[i].target === target) {
-            instance = instances[i].instance;
+        if (instances[i]._eventType === eventType && instances[i]._target === target) {
+            instance = instances[i];
+			break;
         }
     }
 
     if (!instance) {
         instance = new ThrottledEvent(target, eventType);
         
-        instances.push({
-            instance: instance,
-            target: target,
-            eventType: eventType
-        });
+        instances.push(instance);
     }
 
     return instance;
 };
 
 ThrottledEvent.destroy = function() {
-    while (instances.length) {
-        instances[0].instance.destroy();
+    while (instances[0]) {
+        instances[0].destroy();
     }
 };
 
@@ -619,7 +614,7 @@ assign(ScrollObserver.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-        instances$1.splice(instances$1.indexOf(this),  1);
+        instances$1.splice(instances$1.indexOf(this), 1);
 
         if (instances$1.length === 0) {
             ScrollObserver.stopAutoRefresh();
@@ -746,7 +741,7 @@ ScrollObserver.stopAutoRefresh = function() {
 };
 
 ScrollObserver.destroy = function() {
-    while(instances$1.length) {
+    while(instances$1[0]) {
         instances$1[0].destroy();
     }
 };

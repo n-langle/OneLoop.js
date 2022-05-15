@@ -38,7 +38,7 @@ assign(ScrollObserver.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-        instances.splice(instances.indexOf(this),  1);
+        instances.splice(instances.indexOf(this), 1);
 
         if (instances.length === 0) {
             ScrollObserver.stopAutoRefresh();
@@ -165,7 +165,7 @@ ScrollObserver.stopAutoRefresh = function() {
 }
 
 ScrollObserver.destroy = function() {
-    while(instances.length) {
+    while(instances[0]) {
         instances[0].destroy();
     }
 }
