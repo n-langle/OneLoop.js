@@ -29,8 +29,7 @@ assign(ThrottledEvent.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-        var index = instances.indexOf(this),
-            i;
+        var index = instances.indexOf(this);
 
         if (index > -1) {
             instances.splice(index,  1);
