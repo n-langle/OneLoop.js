@@ -408,11 +408,11 @@ assign(ThrottledEvent.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-		var index = instances.indexOf(this);
+        var index = instances.indexOf(this);
 
-		if (index > -1) {
-			instances.splice(index,  1);
-		}
+        if (index > -1) {
+            instances.splice(index,  1);
+        }
 
         this._target.removeEventListener(this._eventType, this._onEvent);
     },
