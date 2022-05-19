@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 2.2.4
+* Version: 2.2.5
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -380,7 +380,7 @@ function getElements (element, context) {
     return typeof element === 'string' ? (context || document).querySelectorAll(element) : element.length >= 0 ? element : [element];
 }
 
-var instances = [];
+var instances$2 = [];
 
 function ThrottledEvent(target, eventType) {
     MainLoopEntry.call(this, {autoStart: false});
@@ -408,10 +408,10 @@ assign(ThrottledEvent.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-        var index = instances.indexOf(this);
+        var index = instances$2.indexOf(this);
 
         if (index > -1) {
-            instances.splice(index,  1);
+            instances$2.splice(index,  1);
         }
 
         this._target.removeEventListener(this._eventType, this._onEvent);
@@ -458,9 +458,9 @@ assign(ThrottledEvent.prototype,
 ThrottledEvent.getInstance = function(target, eventType) {
     var instance, i;
 
-    for (i = 0; i < instances.length; i++) {
-        if (instances[i]._eventType === eventType && instances[i]._target === target) {
-            instance = instances[i];
+    for (i = 0; i < instances$2.length; i++) {
+        if (instances$2[i]._eventType === eventType && instances$2[i]._target === target) {
+            instance = instances$2[i];
 			break;
         }
     }
@@ -468,15 +468,15 @@ ThrottledEvent.getInstance = function(target, eventType) {
     if (!instance) {
         instance = new ThrottledEvent(target, eventType);
         
-        instances.push(instance);
+        instances$2.push(instance);
     }
 
     return instance;
 };
 
 ThrottledEvent.destroy = function() {
-    while (instances[0]) {
-        instances[0].destroy();
+    while (instances$2[0]) {
+        instances$2[0].destroy();
     }
 };
 
@@ -582,7 +582,7 @@ function round(v) {
 
 var instances$1 = [],
     autoRefreshTimer = null,
-    resize = null,
+    resize$1 = null,
     scroll = null;
 
 function ScrollObserver(options) {
@@ -595,11 +595,11 @@ function ScrollObserver(options) {
     this._lastScrollY = 0;
 
     if (instances$1.length === 0) {
-        resize = new ThrottledEvent(window, 'resize');
+        resize$1 = new ThrottledEvent(window, 'resize');
         scroll = new ThrottledEvent(window, 'scroll');
     }
 
-    resize.add('resize', this._onResize);
+    resize$1.add('resize', this._onResize);
     scroll.add('scrollstart', this._onScroll);
 
     instances$1.push(this);
@@ -618,11 +618,11 @@ assign(ScrollObserver.prototype,
 
         if (instances$1.length === 0) {
             ScrollObserver.stopAutoRefresh();
-            resize.destroy();
+            resize$1.destroy();
             scroll.destroy();
-            resize = scroll = null;
+            resize$1 = scroll = null;
         } else {
-            resize.remove('resize', this._onResize);
+            resize$1.remove('resize', this._onResize);
             scroll.remove('scrollstart', this._onScroll);
         }
     },
@@ -746,8 +746,8 @@ ScrollObserver.destroy = function() {
     }
 };
 
-var instances$2 = [],
-    resize$1 = null,
+var instances = [],
+    resize = null,
     specialCharRegExp = new RegExp('(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff]|&([a-zA-Z]{2,6}|#[0-9]{2,5});|<|>)', 'g');
 
 function SplittedText(element, options) {
@@ -757,15 +757,15 @@ function SplittedText(element, options) {
     this._element = element;
     this._onResize = this.split.bind(this);
 
-    if (!resize$1) {
-        resize$1 = new ThrottledEvent(window, 'resize');
+    if (!resize) {
+        resize = new ThrottledEvent(window, 'resize');
     }
 
     if (this.autoSplit) {
         this.split();
     }
 
-    instances$2.push(this);
+    instances.push(this);
 }
 
 SplittedText.defaults = {
@@ -789,17 +789,17 @@ assign(SplittedText.prototype, {
     destroy: function() {
         this.restore();
 
-        instances$2.splice(instances$2.indexOf(this),  1);
+        instances.splice(instances.indexOf(this),  1);
 
-        if (!instances$2.length) {
-            resize$1.destroy();
-            resize$1 = null;
+        if (!instances.length) {
+            resize.destroy();
+            resize = null;
         }
     },
 
     restore: function() {
         this._element.innerHTML = this._originalInnerHTML;
-        resize$1.remove('resize', this._onResize);
+        resize.remove('resize', this._onResize);
 
         return this;
     },
@@ -819,7 +819,7 @@ assign(SplittedText.prototype, {
         }
 
         if (this.byLine) {
-            resize$1.add('resize', this._onResize);
+            resize.add('resize', this._onResize);
 
             children = element.children;
             lastOffsetTop = children[0].offsetTop;
@@ -922,8 +922,8 @@ function getNewOuterHTML(node, strReplacement) {
 // static
 // ----
 SplittedText.destroy = function() {
-    while (instances$2[0]) {
-        instances$2[0].destroy();
+    while (instances[0]) {
+        instances[0].destroy();
     }
 };
 
