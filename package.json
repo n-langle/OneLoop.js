@@ -1,7 +1,7 @@
 {
     "name": "oneloop.js",
     "version": "2.2.4",
-    "description": "Javascript animation library",
+    "description": "Javascript animation library. Provide scroll observer, tween, throttled event, splitted text, easings in a bundle of less than 4kb gzipped",
     "type": "module",
     "main": "./build/OneLoop.min.js",
     "module": "./build/OneLoop.min.js",
@@ -32,7 +32,8 @@
         "easings",
         "tween",
         "scroll-observer",
-        "splitted-text"
+        "splitted-text",
+        "throttled-event"
       ],
     "dependencies": {},
         "devDependencies": {
