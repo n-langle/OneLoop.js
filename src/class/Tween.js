@@ -1,6 +1,7 @@
 import MainLoopEntry from './MainLoopEntry';
 import assign from '../function/assign';
 import easings from '../object/easings';
+import mainLoop from '../object/mainLoop';
 
 
 function Tween(options) {
@@ -23,9 +24,21 @@ Tween.defaults = {
 assign(Tween.prototype, 
     MainLoopEntry.prototype, {
 
+    reset: function() {
+        this._pauseTime = null;
+        this._range = 1;
+        this._executed = 0;
+        this._direction = this.reverse ? 1 : 0;
+
+        mainLoop.remove(this);
+        this.onUpdate(0, 0, 0);
+
+        return this;
+    },
+
     start: function(delay) {
         
-        if (this.reverse) {
+        if (!this._pauseTime && this.reverse) {
             this._range = compute[this._direction](this._executed);
             this._direction = (this._direction + 1) % 2;
         }
@@ -34,17 +47,20 @@ assign(Tween.prototype,
     },
 
     update: function(timestamp, tick) {
-        var result = (easings[this.easing]((timestamp - this._startTime) / (this.duration * this._range)) * this._range) + 1 - this._range,
+        var result = (easings[this.easing]((timestamp - (this._startTime + this._pauseDuration)) / (this.duration * this._range)) * this._range) + 1 - this._range,
             percent = compute[this._direction](result);
 
         this._executed = percent;
 
         this.onUpdate(timestamp, tick, percent);
+
         return this;
     },
 
     complete: function(timestamp, tick) {
         var lastValue = (this._direction + 1) % 2;
+
+        this._pauseTime = null;
 
         this.onUpdate(timestamp, tick, lastValue);
         this.onComplete(timestamp, tick, lastValue);
@@ -58,7 +74,7 @@ assign(Tween.prototype,
     },
 
     needsUpdate: function(timestamp) {
-        return timestamp - this._startTime < this.duration * this._range;
+        return timestamp - (this._startTime + this._pauseDuration) < this.duration * this._range;
     }
 });
 

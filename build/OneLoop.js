@@ -192,7 +192,7 @@ var mainLoop = {
             lastTime = performance.now();
             
             function loop(timestamp) {
-                var tick = (timestamp - lastTime) / (1000 / 60),
+                var tick = (timestamp - lastTime) / 16.66,
                     i;
                     
                 for (i = 0; i < entries.length; i++) {					
@@ -253,6 +253,8 @@ function MainLoopEntry(options) {
     assign(this, MainLoopEntry.defaults, options);
 
     this._startTime = 0;
+    this._pauseDuration = 0;
+    this._pauseTime = null;
 
     if (this.autoStart) {
         this.start();
@@ -275,9 +277,16 @@ assign(MainLoopEntry.prototype, {
         }
 
         if (delay === 0) {
-            this._startTime = performance.now();
+            if (!this._pauseTime) {
+                this._pauseDuration = 0;
+                this._startTime = now();
+                this.onStart(this._startTime, 0, onStartAdditionalParameter);
+            } else {
+                this._pauseDuration += now() - this._pauseTime;
+                this._pauseTime = null;
+            }
+
             mainLoop.add(this);
-            this.onStart(this._startTime, 0, onStartAdditionalParameter);
         } else {
             setTimeout(this.start.bind(this, 0, onStartAdditionalParameter), delay);
         }
@@ -285,9 +294,18 @@ assign(MainLoopEntry.prototype, {
         return this;
     },
 
+    pause: function() {
+        this._pauseTime = now();
+        mainLoop.remove(this);
+        return this;
+    },
+
     stop: function() {
+        this._pauseTime = null;
+
         mainLoop.remove(this);
         this.onStop();
+
         return this;
     },
 
@@ -297,7 +315,10 @@ assign(MainLoopEntry.prototype, {
     },
 
     complete: function(timestamp, tick) {
+        this._pauseTime = null;
+
         this.onComplete(timestamp, tick);
+
         return this;
     },
 
@@ -305,6 +326,10 @@ assign(MainLoopEntry.prototype, {
         return true;
     }
 });
+
+function now() {
+    return performance.now();
+}
 
 function Tween(options) {
     var settings = assign({}, Tween.defaults, options);
@@ -326,9 +351,21 @@ Tween.defaults = {
 assign(Tween.prototype, 
     MainLoopEntry.prototype, {
 
+    reset: function() {
+        this._pauseTime = null;
+        this._range = 1;
+        this._executed = 0;
+        this._direction = this.reverse ? 1 : 0;
+
+        mainLoop.remove(this);
+        this.onUpdate(0, 0, 0);
+
+        return this;
+    },
+
     start: function(delay) {
         
-        if (this.reverse) {
+        if (!this._pauseTime && this.reverse) {
             this._range = compute[this._direction](this._executed);
             this._direction = (this._direction + 1) % 2;
         }
@@ -337,17 +374,20 @@ assign(Tween.prototype,
     },
 
     update: function(timestamp, tick) {
-        var result = (easings[this.easing]((timestamp - this._startTime) / (this.duration * this._range)) * this._range) + 1 - this._range,
+        var result = (easings[this.easing]((timestamp - (this._startTime + this._pauseDuration)) / (this.duration * this._range)) * this._range) + 1 - this._range,
             percent = compute[this._direction](result);
 
         this._executed = percent;
 
         this.onUpdate(timestamp, tick, percent);
+
         return this;
     },
 
     complete: function(timestamp, tick) {
         var lastValue = (this._direction + 1) % 2;
+
+        this._pauseTime = null;
 
         this.onUpdate(timestamp, tick, lastValue);
         this.onComplete(timestamp, tick, lastValue);
@@ -361,7 +401,7 @@ assign(Tween.prototype,
     },
 
     needsUpdate: function(timestamp) {
-        return timestamp - this._startTime < this.duration * this._range;
+        return timestamp - (this._startTime + this._pauseDuration) < this.duration * this._range;
     }
 });
 

@@ -32,7 +32,7 @@ export default {
             lastTime = performance.now();
             
             function loop(timestamp) {
-                var tick = (timestamp - lastTime) / (1000 / 60),
+                var tick = (timestamp - lastTime) / 16.66,
                     i;
                     
                 for (i = 0; i < entries.length; i++) {					
