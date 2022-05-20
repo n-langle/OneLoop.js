@@ -1,24 +1,32 @@
 import MainLoopEntry from './MainLoopEntry';
 import assign from '../function/assign';
+import now from '../function/now';
 import easings from '../object/easings';
 import mainLoop from '../object/mainLoop';
 
 
 function Tween(options) {
-    var settings = assign({}, Tween.defaults, options);
+    MainLoopEntry.call(this, assign({}, Tween.defaults, options));
 
+    this._startTime = 0;
     this._range = 1;
     this._executed = 0;
-    this._direction = settings.reverse ? 1 : 0;
+    this._direction = this.reverse ? 1 : 0;
+    this._pauseDuration = 0;
+    this._pauseTime = null;
 
-    MainLoopEntry.call(this, settings);
+    if (this.autoStart) {
+        this.start();
+    }
 }
 
 Tween.defaults = {
+    delay: 0,
     duration: 1000,
     easing: 'linear',
     loop: 0,
-    reverse: false
+    reverse: false,
+    autoStart: true
 };
 
 assign(Tween.prototype, 
@@ -36,14 +44,39 @@ assign(Tween.prototype,
         return this;
     },
 
+    pause: function() {
+        this._pauseTime = now();
+        mainLoop.remove(this);
+        return this;
+    },
+
     start: function(delay) {
-        
-        if (!this._pauseTime && this.reverse) {
-            this._range = compute[this._direction](this._executed);
-            this._direction = (this._direction + 1) % 2;
+
+        if (delay !== 0 && !delay) {
+            delay = this.delay;
         }
 
-        return MainLoopEntry.prototype.start.call(this, delay, 1 - this._range);
+        if (delay === 0) {
+            if (!this._pauseTime) {
+                if (this.reverse) {
+                    this._range = compute[this._direction](this._executed);
+                    this._direction = (this._direction + 1) % 2;
+                }
+
+                this._pauseDuration = 0;
+                this._startTime = now();
+                this.onStart(this._startTime, 0, 1 - this._range);
+            } else {
+                this._pauseDuration += now() - this._pauseTime;
+                this._pauseTime = null;
+            }
+
+            mainLoop.add(this);
+        } else {
+            setTimeout(this.start.bind(this, 0), delay);
+        }
+
+        return this;
     },
 
     update: function(timestamp, tick) {

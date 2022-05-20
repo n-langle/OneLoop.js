@@ -1,10 +1,11 @@
 import MainLoopEntry from './MainLoopEntry';
 import assign from '../function/assign';
+import mainLoop from '../object/mainLoop';
 
 var instances = [];
 
 function ThrottledEvent(target, eventType) {
-    MainLoopEntry.call(this, {autoStart: false});
+    MainLoopEntry.call(this);
     
     var events = {}
 
@@ -63,11 +64,13 @@ assign(ThrottledEvent.prototype,
 
     update: function(timestamp, tick) {
         dispatch(this._events[this._eventType], this._event);
+        this.onUpdate(timestamp, tick);
         return this;
     },
 
     complete: function(timestamp, tick) {
         dispatch(this._events[this._eventType + 'end'], this._event);
+        this.onComplete(timestamp, tick);
         return this;
     },
 

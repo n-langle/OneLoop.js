@@ -10,7 +10,7 @@ var instances = [],
     scroll = null;
 
 function ScrollObserver(options) {
-    MainLoopEntry.call(this, assign({}, ScrollObserver.defaults, options, {autoStart: false}));
+    MainLoopEntry.call(this, assign({}, ScrollObserver.defaults, options));
 
     this._elements = [];
     this._entries = [];
