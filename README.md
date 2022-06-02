@@ -16,7 +16,7 @@ The aim of the project is to create an easy to use, lightweight, cross-browser, 
 This code will create a scroll observer :
 
 ```javascript
-import { ScrollObserver } from './build/OneLoop.min.js';
+import { ScrollObserver } from 'oneloop.js';
 
 const scrollObserver = new ScrollObserver();
 
@@ -90,7 +90,7 @@ scrollObserver.destroy();
 This code will create a tween :
 
 ```javascript
-import { Tween } from './build/OneLoop.min.js';
+import { Tween } from 'oneloop.js';
 
 new Tween({
     onUpdate: function(timestamp, tick, percent) {
@@ -126,11 +126,28 @@ const tween = new Tween({
 ### Methods
 ```javascript
 /**
- * start (reverse at each call if option reverse is set to true)
+ * start 
+ *      reverse at each call if option reverse is set to true
+ *      continue if the tween has been previously paused
+ * 
  * @param delay = override the option delay if needed
  * @return this 
  */
 tween.start(delay);
+
+/**
+ * pause
+ * @return this 
+ */
+tween.pause();
+
+/**
+ * reset
+ * 		reset the tween to its intial state, call onUpdate with timestamp, tick and percent equal to 0
+ * 
+ * @return this 
+ */
+tween.reset();
 
 /**
  * stop
@@ -144,7 +161,7 @@ tween.stop();
 This code will create a throttled/debounced event :
 
 ```javascript
-import { ThrottledEvent } from './build/OneLoop.min.js';
+import { ThrottledEvent } from 'oneloop.js';
 
 const resize = new ThrottledEvent(window, 'resize');
 
@@ -163,7 +180,7 @@ resize.add('resizeend', function(event) {
 
 If you want create only one event for all your script, you can use it as a singleton by calling the static method get instance :
 ```javascript
-import { ThrottledEvent } from './build/OneLoop.min.js';
+import { ThrottledEvent } from 'oneloop.js';
 
 const resize1 = ThrottledEvent.getInstance(window, 'scroll');
 
@@ -219,7 +236,7 @@ SplittedText support emoji, credit for the emoji regexp goes to [Kevin Scott](ht
 This will split a text into line, word or/and char :
 
 ```javascript
-import { SplittedText } from './build/OneLoop.min.js';
+import { SplittedText } from 'oneloop.js';
 
 const splittedText = new SplittedText(element, { byWord: true });
 ```
@@ -229,7 +246,7 @@ const splittedText = new SplittedText(element, { byWord: true });
 const splittedText = new SplittedText({
     autoSplit: false,       // default: true, split the text in the constructor
     byLine: false,          // default: false, split the content by line
-    byWord: false,          // default: false, split the content by word (the text will be splitted by word if byLine is set to true, even if byWord is set to false)
+    byWord: false,          // default: false, split the content by word
     byChar: false,          // default: false, split the text by char
     preserve: 'st-char',    // default: st-char, must be equal to the class used in charWrapper function
     lineWrapper: function(line) {
@@ -270,7 +287,7 @@ splittedText.destroy();
 Set of easings functions, credit goes to [ai/easings.net](https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts)
 
 ```javascript
-import { Tween, easings } from './build/OneLoop.min.js';
+import { Tween, easings } from 'oneloop.js';
 
 const tween = new Tween({
     easing: 'linear',
@@ -281,37 +298,37 @@ const tween = new Tween({
         // your code ...
     }
 });
-
-// list of available easings functions :
-easings.linear();
-easings.easeInQuad();
-easings.easeOutQuad();
-easings.easeInOutQuad();
-easings.easeInCubic();
-easings.easeOutCubic();
-easings.easeInOutCubic();
-easings.easeInQuart();
-easings.easeOutQuart();
-easings.easeInOutQuart();
-easings.easeInQuint();
-easings.easeOutQuint();
-easings.easeInOutQuint();
-easings.easeInSine();
-easings.easeOutSine();
-easings.easeInOutSine();
-easings.easeInExpo();
-easings.easeOutExpo();
-easings.easeInOutExpo();
-easings.easeInCirc();
-easings.easeOutCirc();
-easings.easeInOutCirc();
-easings.easeInBack();
-easings.easeOutBack();
-easings.easeInOutBack();
-easings.easeInElastic();
-easings.easeOutElastic();
-easings.easeInOutElastic();
-easings.easeInBounce();
-easings.easeOutBounce();
-easings.easeInOutBounce();
 ```
+
+### list of available easings functions :
+- linear
+- easeInQuad
+- easeOutQuad
+- easeInOutQuad
+- easeInCubic
+- easeOutCubic
+- easeInOutCubic
+- easeInQuart
+- easeOutQuart
+- easeInOutQuart
+- easeInQuint
+- easeOutQuint
+- easeInOutQuint
+- easeInSine
+- easeOutSine
+- easeInOutSine
+- easeInExpo
+- easeOutExpo
+- easeInOutExpo
+- easeInCirc
+- easeOutCirc
+- easeInOutCirc
+- easeInBack
+- easeOutBack
+- easeInOutBack
+- easeInElastic
+- easeOutElastic
+- easeInOutElastic
+- easeInBounce
+- easeOutBounce
+- easeInOutBounce
