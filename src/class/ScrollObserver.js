@@ -17,6 +17,7 @@ function ScrollObserver(options) {
     this._onScroll = this.start.bind(this);
     this._onResize = this.refresh.bind(this);
     this._lastScrollY = 0;
+    this._needsUpdate = true;
 
     if (instances.length === 0) {
         resize = new ThrottledEvent(window, 'resize');
@@ -38,16 +39,20 @@ assign(ScrollObserver.prototype,
     MainLoopEntry.prototype, {
 
     destroy: function() {
-        instances.splice(instances.indexOf(this), 1);
+        if (this._needsUpdate) {
+            this._needsUpdate = false;
 
-        if (instances.length === 0) {
-            ScrollObserver.stopAutoRefresh();
-            resize.destroy();
-            scroll.destroy();
-            resize = scroll = null;
-        } else {
-            resize.remove('resize', this._onResize);
-            scroll.remove('scrollstart', this._onScroll);
+            instances.splice(instances.indexOf(this), 1);
+
+            if (instances.length === 0) {
+                ScrollObserver.stopAutoRefresh();
+                resize.destroy();
+                scroll.destroy();
+                resize = scroll = null;
+            } else {
+                resize.remove('resize', this._onResize);
+                scroll.remove('scrollstart', this._onScroll);
+            }
         }
     },
 
@@ -98,7 +103,7 @@ assign(ScrollObserver.prototype,
     },
 
     needsUpdate: function(timestamp) {
-        return scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageYOffset - this._lastScrollY) > 1;
+        return this._needsUpdate && scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageYOffset - this._lastScrollY) > 1;
     },
 
     getScrollInfos: function() {
