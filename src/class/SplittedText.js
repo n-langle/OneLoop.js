@@ -68,7 +68,7 @@ assign(SplittedText.prototype, {
 			lineWrapper = function(line, suffix) {
 				return line ? that.lineWrapper(line) + suffix : '';
 			},
-            lastOffsetTop, offsetTop, children, child, i;
+            lastOffsetTop, offsetTop, children, child, i, isBR;
 
         element.innerHTML = this._originalInnerHTML;
 
@@ -85,13 +85,14 @@ assign(SplittedText.prototype, {
             for (i = 0; i < children.length; i++) {
 				child = children[i];
 				offsetTop = child.offsetTop;
+                isBR = child.tagName === 'BR';
 
-				if (lastOffsetTop !== offsetTop) {
+				if (lastOffsetTop !== offsetTop || isBR) {
 					html += lineWrapper(line.substring(-1), ' ');
 					line = '';
 				}
 
-				if (child.tagName !== 'BR') {
+				if (!isBR) {
 					line += child.outerHTML + ' ';
 				} else {
 					html += '<br />';
