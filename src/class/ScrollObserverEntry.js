@@ -34,8 +34,6 @@ assign(ScrollObserverEntry.prototype, {
         this.startRTE = Math.max(bounding.top + scrollY - height, 0);
         this.distanceRTE = Math.min(bounding.bottom + scrollY - this.startRTE, document.documentElement.scrollHeight - height);
 
-        this.boundingClientRect = bounding;
-
         this.control(scroll);
 
         return this;

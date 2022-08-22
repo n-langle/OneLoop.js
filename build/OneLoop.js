@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 3.0.5
+* Version: 4.0.0
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -577,8 +577,6 @@ assign(ScrollObserverEntry.prototype, {
         // start end distance Relative To Element
         this.startRTE = Math.max(bounding.top + scrollY - height, 0);
         this.distanceRTE = Math.min(bounding.bottom + scrollY - this.startRTE, document.documentElement.scrollHeight - height);
-
-        this.boundingClientRect = bounding;
 
         this.control(scroll);
 
