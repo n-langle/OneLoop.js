@@ -715,6 +715,10 @@ assign(ScrollObserver.prototype,
         return this._needsUpdate && scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageYOffset - this._lastScrollY) > 1;
     },
 
+    hasEntry: function() {
+        return this._entries.length > 0;
+    },
+
     getScrollInfos: function() {
         var y = this._lastScrollY + (window.pageYOffset - this._lastScrollY) / this.scrollDivider,
             deltaY = y - this._lastScrollY;

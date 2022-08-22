@@ -79,6 +79,12 @@ scrollObserver.observe(element, {
 scrollObserver.unobserve(element);
 
 /**
+ * hasEntry
+ * @return bool
+ */
+scrollObserver.hasEntry(element);
+
+/**
  * destroy
 * @return undefined
  */
