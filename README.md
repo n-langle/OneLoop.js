@@ -82,7 +82,7 @@ scrollObserver.unobserve(element);
  * hasEntry
  * @return bool
  */
-scrollObserver.hasEntry(element);
+scrollObserver.hasEntry();
 
 /**
  * destroy
