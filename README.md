@@ -31,6 +31,7 @@ scrollObserver.observe('.css-selector', {
 ```javascript
 const scrollObserver = new ScrollObserver({
     scrollDivider: 2, // default: 1, smooth the scroll value
+    onRefresh: function() {}, // triggered when the height of the document change or when the window is resized
 });
 ```
 

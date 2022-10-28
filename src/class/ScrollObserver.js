@@ -3,6 +3,7 @@ import getElements from '../function/getElements';
 import MainLoopEntry from '../class/MainLoopEntry';
 import ThrottledEvent from '../class/ThrottledEvent';
 import ScrollObserverEntry from '../class/ScrollObserverEntry';
+import noop from '../function/noop';
 
 var instances = [],
     autoRefreshTimer = null,
@@ -32,7 +33,8 @@ function ScrollObserver(options) {
 }
 
 ScrollObserver.defaults = {
-    scrollDivider: 1
+    scrollDivider: 1,
+    onRefresh: noop
 };
 
 assign(ScrollObserver.prototype,
@@ -128,6 +130,8 @@ assign(ScrollObserver.prototype,
         for (i = 0; i < this._entries.length; i++) {
             this._entries[i].refresh(scrollInfos);
         }
+
+        this.onRefresh(scrollInfos);
 
         return this;
     }

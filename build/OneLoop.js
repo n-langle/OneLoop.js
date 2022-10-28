@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 4.0.0
+* Version: 4.1.0
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -641,7 +641,8 @@ function ScrollObserver(options) {
 }
 
 ScrollObserver.defaults = {
-    scrollDivider: 1
+    scrollDivider: 1,
+    onRefresh: noop
 };
 
 assign(ScrollObserver.prototype,
@@ -737,6 +738,8 @@ assign(ScrollObserver.prototype,
         for (i = 0; i < this._entries.length; i++) {
             this._entries[i].refresh(scrollInfos);
         }
+
+        this.onRefresh();
 
         return this;
     }
