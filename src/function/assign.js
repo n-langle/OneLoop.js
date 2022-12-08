@@ -1,16 +1,16 @@
 export default function() {
-    var args = arguments,
-        rt = args[0],
-        i, prop;
+    const
+        args = arguments,
+        rt = args[0];
         
 
-    for (i = 1; i < args.length; i++) {
-        for (prop in args[i]) {
+    for (let i = 1; i < args.length; i++) {
+        for (let prop in args[i]) {
             if (typeof args[i][prop] !== 'undefined') {
                 rt[prop] = args[i][prop];
             }
         }
     }
 
-    return rt
+    return rt;
 }
