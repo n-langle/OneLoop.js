@@ -25,11 +25,9 @@ export default {
     },
 
     start() {
-        let lastTime;
-
         if (raf === null) { 
 
-            lastTime = performance.now();
+            let lastTime = performance.now();
             
             function loop(timestamp) {
                 const tick = (timestamp - lastTime) / 16.66;

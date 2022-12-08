@@ -5,42 +5,35 @@ import ThrottledEvent from '../class/ThrottledEvent';
 import ScrollObserverEntry from '../class/ScrollObserverEntry';
 import noop from '../function/noop';
 
-var instances = [],
-    autoRefreshTimer = null,
+const instances = [];
+let autoRefreshTimer = null,
     resize = null,
     scroll = null;
 
-function ScrollObserver(options) {
-    MainLoopEntry.call(this, assign({}, ScrollObserver.defaults, options));
+class ScrollObserver extends MainLoopEntry {
+    constructor(options) {
+        super(assign({}, ScrollObserver.defaults, options));
 
-    this._elements = [];
-    this._entries = [];
-    this._onScroll = this.start.bind(this);
-    this._onResize = this.refresh.bind(this);
-    this._lastScrollY = 0;
-    this._needsUpdate = true;
+        this._elements = [];
+        this._entries = [];
+        this._onScroll = this.start.bind(this);
+        this._onResize = this.refresh.bind(this);
+        this._lastScrollY = 0;
+        this._needsUpdate = true;
 
-    if (instances.length === 0) {
-        resize = new ThrottledEvent(window, 'resize');
-        scroll = new ThrottledEvent(window, 'scroll');
+        if (instances.length === 0) {
+            resize = new ThrottledEvent(window, 'resize');
+            scroll = new ThrottledEvent(window, 'scroll');
+        }
+
+        resize.add('resize', this._onResize);
+        scroll.add('scrollstart', this._onScroll);
+
+        instances.push(this);
+        ScrollObserver.startAutoRefresh();
     }
 
-    resize.add('resize', this._onResize);
-    scroll.add('scrollstart', this._onScroll);
-
-    instances.push(this);
-    ScrollObserver.startAutoRefresh();
-}
-
-ScrollObserver.defaults = {
-    scrollDivider: 1,
-    onRefresh: noop
-};
-
-assign(ScrollObserver.prototype,
-    MainLoopEntry.prototype, {
-
-    destroy: function() {
+    destroy() {
         if (this._needsUpdate) {
             this._needsUpdate = false;
 
@@ -56,14 +49,14 @@ assign(ScrollObserver.prototype,
                 scroll.remove('scrollstart', this._onScroll);
             }
         }
-    },
+    }
 
-    observe: function(element, options) {
-        var els = getElements(element),
-            scroll = this.getScrollInfos(),
-            i;
+    observe(element, options) {
+        const
+            els = getElements(element),
+            scroll = this.getScrollInfos();
 
-        for (i = 0; i < els.length; i++) {
+        for (let i = 0; i < els.length; i++) {
             if (this._elements.indexOf(els[i]) === -1) {
                 this._entries.push(new ScrollObserverEntry(els[i], options, scroll));
                 this._elements.push(els[i]);
@@ -71,15 +64,13 @@ assign(ScrollObserver.prototype,
         }
 
         return this;	
-    },
+    }
 
-    unobserve: function(element) {
-        var els = getElements(element),
-            index, 
-            i;
+    unobserve(element) {
+        const els = getElements(element);
 
-        for (i = 0; i < els.length; i++) {
-            index = this._elements.indexOf(els[i]);
+        for (let i = 0; i < els.length; i++) {
+            let index = this._elements.indexOf(els[i]);
             if (index > -1) {
                 this._elements.splice(index, 1);
                 this._entries.splice(index, 1);
@@ -87,33 +78,33 @@ assign(ScrollObserver.prototype,
         }
 
         return this;
-    },
+    }
 
-    update: function(timestamp, tick) {
+    update(timestamp, tick) {
         this.onUpdate(timestamp, tick);
 
-        var scroll = this.getScrollInfos(),
-            i; 
+        const scroll = this.getScrollInfos();
 
-        for (i = 0; i < this._entries.length; i++) {
+        for (let i = 0; i < this._entries.length; i++) {
             this._entries[i].control(scroll);
         }
 
         this._lastScrollY = scroll.y;
 
         return this;
-    },
+    }
 
-    needsUpdate: function(timestamp) {
+    needsUpdate(timestamp) {
         return this._needsUpdate && scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageYOffset - this._lastScrollY) > 1;
-    },
+    }
 
-    hasEntry: function() {
+    hasEntry() {
         return this._entries.length > 0;
-    },
+    }
 
-    getScrollInfos: function() {
-        var y = this._lastScrollY + (window.pageYOffset - this._lastScrollY) / this.scrollDivider,
+    getScrollInfos() {
+        const
+            y = this._lastScrollY + (window.pageYOffset - this._lastScrollY) / this.scrollDivider,
             deltaY = y - this._lastScrollY;
         
         return {
@@ -121,13 +112,12 @@ assign(ScrollObserver.prototype,
             deltaY: deltaY,
             directionY: deltaY / Math.abs(deltaY) || 0
         }
-    },
+    }
 
-    refresh: function() {
-        var scrollInfos = this.getScrollInfos(),
-            i;
+    refresh() {
+        const scrollInfos = this.getScrollInfos();
     
-        for (i = 0; i < this._entries.length; i++) {
+        for (let i = 0; i < this._entries.length; i++) {
             this._entries[i].refresh(scrollInfos);
         }
 
@@ -135,13 +125,19 @@ assign(ScrollObserver.prototype,
 
         return this;
     }
-});
+}
+
+ScrollObserver.defaults = {
+    scrollDivider: 1,
+    onRefresh: noop
+};
 
 // ----
 // utils
 // ----
 function getDocumentHeight() {
-    var html = document.documentElement,
+    const
+        html = document.documentElement,
         body = document.body;
 
     return Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
@@ -154,14 +150,13 @@ ScrollObserver.autoRefreshDelay = 1000;
 
 ScrollObserver.startAutoRefresh = function() {
     if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
-        var lastDocumentHeight = getDocumentHeight();
+        let lastDocumentHeight = getDocumentHeight();
 
         autoRefreshTimer = setInterval(function() {
-            var height = getDocumentHeight(),
-                i;
+            const height = getDocumentHeight();
 
-            if ( height !== lastDocumentHeight) {
-                for (i = 0; i < instances.length; i++) {
+            if (height !== lastDocumentHeight) {
+                for (let i = 0; i < instances.length; i++) {
                     instances[i].refresh();
                 }
                 lastDocumentHeight = height;
