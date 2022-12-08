@@ -1,8 +1,8 @@
-var entries = [],
-    raf = null;
+const entries = [];
+let raf = null;
 
 export default {
-    add: function(entry) {
+    add(entry) {
         if (entries.indexOf(entry) === -1) {
             entries.push(entry);
             
@@ -14,8 +14,8 @@ export default {
         return this;
     },
 
-    remove: function(entry) {
-        var index = entries.indexOf(entry);
+    remove(entry) {
+        const index = entries.indexOf(entry);
 
         if (index > -1) {
             entries.splice(index, 1);
@@ -24,18 +24,17 @@ export default {
         return this;
     },
 
-    start: function() {
-        var lastTime;
+    start() {
+        let lastTime;
 
         if (raf === null) { 
 
             lastTime = performance.now();
             
             function loop(timestamp) {
-                var tick = (timestamp - lastTime) / 16.66,
-                    i;
+                const tick = (timestamp - lastTime) / 16.66;
                     
-                for (i = 0; i < entries.length; i++) {					
+                for (let i = 0; i < entries.length; i++) {					
                     if (entries[i].needsUpdate(timestamp)) {
                         entries[i].update(timestamp, tick);
                     } else {
@@ -58,14 +57,14 @@ export default {
         return this;
     },
 
-    stop: function() {
+    stop() {
         cancelAnimationFrame(raf);
         raf = null;
         return this;
     },
 
-    destroy: function() {
+    destroy() {
         entries.length = 0;
         this.stop();
     }
-}
+};
