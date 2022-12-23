@@ -51,6 +51,10 @@ class SplittedText {
         element.innerHTML = this._originalInnerHTML;
 
         if (this.byLine) {
+            wrapByWord(element, function(word) {
+                return '<span class="st-word-temp">' + word + '</span>';
+            });
+            
             const
                 children = element.children,
                 lineWrapper = (line, suffix) => {
@@ -61,10 +65,6 @@ class SplittedText {
                 lastOffsetTop = children[0].offsetTop;
 
             resize.add('resize', this._onResize);
-
-            wrapByWord(element, function(word) {
-                return '<span class="st-word-temp">' + word + '</span>';
-            });
 
             for (let i = 0; i < children.length; i++) {
 				let child = children[i],
