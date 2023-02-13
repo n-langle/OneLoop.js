@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 4.1.0
+* Version: 4.1.1
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -434,7 +434,7 @@ function ThrottledEvent(target, eventType) {
     this._eventType = eventType;
     this._event = null;
 
-    this._target.addEventListener(this._eventType, this._onEvent);
+    this._target.addEventListener(this._eventType, this._onEvent, {passive: true});
 }
 
 assign(ThrottledEvent.prototype, 
@@ -739,7 +739,7 @@ assign(ScrollObserver.prototype,
             this._entries[i].refresh(scrollInfos);
         }
 
-        this.onRefresh();
+        this.onRefresh(scrollInfos);
 
         return this;
     }
