@@ -433,7 +433,7 @@ class ThrottledEvent extends MainLoopEntry {
         this._eventType = eventType;
         this._event = null;
 
-        this._target.addEventListener(this._eventType, this._onEvent);
+        this._target.addEventListener(this._eventType, this._onEvent, {passive: true});
     }
 
     destroy() {
