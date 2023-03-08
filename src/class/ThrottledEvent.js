@@ -1,6 +1,4 @@
 import MainLoopEntry from './MainLoopEntry';
-import assign from '../function/assign';
-import mainLoop from '../object/mainLoop';
 
 var instances = [];
 
