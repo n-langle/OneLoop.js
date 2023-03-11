@@ -1,3 +1,5 @@
+import now from '../function/now';
+
 const entries = [];
 let raf = null;
 
@@ -27,7 +29,7 @@ export default {
     start() {
         if (raf === null) { 
 
-            let lastTime = performance.now();
+            let lastTime = now();
             
             function loop(timestamp) {
                 const tick = (timestamp - lastTime) / 16.66;

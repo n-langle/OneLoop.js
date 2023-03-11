@@ -51,15 +51,11 @@ class SplittedText {
         element.innerHTML = this._originalInnerHTML;
 
         if (this.byLine) {
-            wrapByWord(element, function(word) {
-                return '<span class="st-word-temp">' + word + '</span>';
-            });
+            wrapByWord(element, word => '<span class="st-word-temp">' + word + '</span>');
             
             const
                 children = element.children,
-                lineWrapper = (line, suffix) => {
-                    return line ? this.lineWrapper(line) + suffix : '';
-                };
+                lineWrapper = (line, suffix) => line ? this.lineWrapper(line) + suffix : '';
             let line = '',
                 html = '',
                 lastOffsetTop = children[0].offsetTop;
@@ -67,7 +63,8 @@ class SplittedText {
             resize.add('resize', this._onResize);
 
             for (let i = 0; i < children.length; i++) {
-				let child = children[i],
+				const
+					child = children[i],
 				    offsetTop = child.offsetTop,
                     isBR = child.tagName === 'BR';
 
@@ -95,9 +92,12 @@ class SplittedText {
     
         if (this.byChar) {
             element.innerHTML = wrapSpecialChar(element, this.charWrapper);
-            element.innerHTML = split(element, '', (char) => {
-				return !whiteCharRegExp.test(char) ? this.charWrapper(char) : char;
-			}, this.preserve);
+            element.innerHTML = split(
+				element,
+				'',
+				char => !whiteCharRegExp.test(char) ? this.charWrapper(char) : char,
+				this.preserve
+			);
         }
 
         return this;
@@ -145,31 +145,23 @@ function traverseNode(element, textCallback, nodeCallback) {
 function preserveCode(element) {
     return traverseNode(
         element,
-        function(text) {
-            return text.replace('<', '[<]');
-        },
-        function(child) {
-            return getNewOuterHTML(child, preserveCode(child));
-        }
+        text => text.replace('<', '[<]'),
+        child => getNewOuterHTML(child, preserveCode(child))
     );
 }
 
 function wrapSpecialChar(element, wrapper) {
     return traverseNode(
         element,
-        function(text) {
-            return text.replace(specialCharRegExp, wrapper);
-        },
-        function(child) {
-            return getNewOuterHTML(child, wrapSpecialChar(child, wrapper));
-        }
+        text => text.replace(specialCharRegExp, wrapper),
+        child => getNewOuterHTML(child, wrapSpecialChar(child, wrapper))
     );
 }
 
 function split(element, separator, wrapper, preserve) {
     return traverseNode(
         element,
-        function(text) {
+        text => {
 			var trimmedText = text.trim();
 
             return trimmedText !== '' ?
@@ -177,7 +169,7 @@ function split(element, separator, wrapper, preserve) {
                 : 
                 text;
         },
-        function(child) {
+        child => {
             return preserve && child.classList.contains(preserve) ?
                 child.outerHTML
                 :
@@ -189,15 +181,11 @@ function split(element, separator, wrapper, preserve) {
 function unwrap(element, className) {
     return traverseNode(
         element,
-        function(text) {
-            return text;
-        },
-        function(child) {
-            return child.classList.contains(className) ?
-                child.innerHTML
-                :
-                getNewOuterHTML(child, unwrap(child, className));
-        }
+        text => text,
+        child => child.classList.contains(className) ?
+			child.innerHTML
+			:
+			getNewOuterHTML(child, unwrap(child, className))
     );
 }
 

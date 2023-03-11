@@ -1,6 +1,6 @@
 import MainLoopEntry from './MainLoopEntry';
 
-var instances = [];
+const instances = [];
 
 class ThrottledEvent extends MainLoopEntry {
     constructor(target, eventType) {

@@ -5,7 +5,8 @@ import ThrottledEvent from '../class/ThrottledEvent';
 import ScrollObserverEntry from '../class/ScrollObserverEntry';
 import noop from '../function/noop';
 
-const instances = [];
+const
+	instances = [];
 let autoRefreshTimer = null,
     resize = null,
     scroll = null;

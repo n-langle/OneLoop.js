@@ -4,7 +4,6 @@ import now from '../function/now';
 import easings from '../object/easings';
 import mainLoop from '../object/mainLoop';
 
-
 class Tween extends MainLoopEntry {
     constructor(options) {
         super(assign({}, Tween.defaults, options));
