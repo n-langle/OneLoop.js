@@ -10,23 +10,23 @@ class MainLoopEntry {
 
     start() {
         mainLoop.add(this);
-        this.onStart(now(), 0);
+        this.onStart.call(this, now(), 0);
         return this;
     }
 
     stop() {
         mainLoop.remove(this);
-        this.onStop(now(), 0);
+        this.onStop.call(this, now(), 0);
         return this;
     }
 
     update(timestamp, tick) {
-        this.onUpdate(timestamp, tick);
+        this.onUpdate.call(this, timestamp, tick);
         return this;
     }
 
     complete(timestamp, tick) {
-        this.onComplete(timestamp, tick);
+        this.onComplete.call(this, timestamp, tick);
         return this;
     }
 

@@ -1,6 +1,7 @@
 import assign from '../function/assign';
 import noop from '../function/noop';
 import getElements from '../function/getElements';
+import Vector2 from './Vector2';
 
 class ScrollObserverEntry {
     constructor(element, options, scrollInfos) {
@@ -17,15 +18,29 @@ class ScrollObserverEntry {
         const
             bounding = this.element.getBoundingClientRect(),
             scrollY = window.pageYOffset,
-            height = window.innerHeight;
+            height = window.innerHeight,
+            scrollX = window.pageXOffset,
+            width = window.innerWidth;
         
         // start and distance Relative To Window 
-        this.distanceRTW = height + bounding.bottom - bounding.top;
-        this.startRTW = bounding.bottom - this.distanceRTW + scrollY;
+        this.distanceRTW = new Vector2(
+            width + bounding.right - bounding.left,
+            height + bounding.bottom - bounding.top
+        );
+        this.startRTW = new Vector2(
+            bounding.right - this.distanceRTW.x + scrollX,
+            bounding.bottom - this.distanceRTW.y + scrollY
+        );
 
         // start end distance Relative To Element
-        this.startRTE = Math.max(bounding.top + scrollY - height, 0);
-        this.distanceRTE = Math.min(bounding.bottom + scrollY - this.startRTE, document.documentElement.scrollHeight - height);
+        this.startRTE = new Vector2(
+            Math.max(bounding.left + scrollX - width, 0),
+            Math.max(bounding.top + scrollY - height, 0)
+        );
+        this.distanceRTE = new Vector2(
+            Math.min(bounding.right + scrollX - this.startRTE.x, document.documentElement.scrollWidth - width),
+            Math.min(bounding.bottom + scrollY - this.startRTE.y, document.documentElement.scrollHeight - height)
+        );
 
         this.control(scrollInfos);
 
@@ -34,10 +49,11 @@ class ScrollObserverEntry {
 
     control(scrollInfos) {
         const
-            p1 = (scrollInfos.y - this.startRTW) / this.distanceRTW,
-            p2 = (scrollInfos.y - this.startRTE) / this.distanceRTE;
+            scroll = scrollInfos.scroll,
+            p1 = scroll.clone().subtract(this.startRTW).divide(this.distanceRTW),
+            p2 = scroll.clone().subtract(this.startRTE).divide(this.distanceRTE);
 
-        if (p1 >= 0 && p1 <= 1) {
+        if (p1.x >= 0 && p1.x <= 1 && p1.y >= 0 && p1.y <= 1) {
             if (!this._isVisible) {
                 this._isVisible = true;
                 this.onVisibilityStart.call(this, scrollInfos, round(p1), round(p2));
@@ -68,7 +84,7 @@ ScrollObserverEntry.defaults = {
 };
 
 function round(v) {
-    return Math.abs(Math.round(v));
+    return v.clone().set(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)));
 }
 
 export default ScrollObserverEntry;

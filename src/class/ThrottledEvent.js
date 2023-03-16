@@ -3,7 +3,7 @@ import MainLoopEntry from './MainLoopEntry';
 const instances = [];
 
 class ThrottledEvent extends MainLoopEntry {
-    constructor(target, eventType) {
+    constructor(target, eventType, name) {
         super();
         
         const events = {}
@@ -21,6 +21,7 @@ class ThrottledEvent extends MainLoopEntry {
         this._target = target;
         this._eventType = eventType;
         this._event = null;
+        this._name = name || '';
 
         this._target.addEventListener(this._eventType, this._onEvent, {passive: true});
     }
@@ -63,13 +64,13 @@ class ThrottledEvent extends MainLoopEntry {
 
     update(timestamp, tick) {
         dispatch(this._events[this._eventType], this._event);
-        this.onUpdate(timestamp, tick);
+        super.update(timestamp, tick);
         return this;
     }
 
     complete(timestamp, tick) {
         dispatch(this._events[this._eventType + 'end'], this._event);
-        this.onComplete(timestamp, tick);
+        super.complete(timestamp, tick);
         return this;
     }
 
@@ -78,23 +79,25 @@ class ThrottledEvent extends MainLoopEntry {
     }
 }
 
-ThrottledEvent.getInstance = function(target, eventType) {
-    let instance;
+ThrottledEvent.getInstance = function(target, eventType, name) {
+    let found;
+
+    name = name || '';
 
     for (let i = 0; i < instances.length; i++) {
-        if (instances[i]._eventType === eventType && instances[i]._target === target) {
-            instance = instances[i];
+        let instance = instances[i];
+        if (instance._eventType === eventType && instance._target === target && instance._name === name) {
+            found = instances[i];
 			break;
         }
     }
 
-    if (!instance) {
-        instance = new ThrottledEvent(target, eventType);
-        
-        instances.push(instance);
+    if (!found) {
+        found = new ThrottledEvent(target, eventType, name);
+        instances.push(found);
     }
 
-    return instance;
+    return found;
 }
 
 ThrottledEvent.destroy = function() {

@@ -259,23 +259,23 @@ class MainLoopEntry {
 
     start() {
         mainLoop.add(this);
-        this.onStart(now(), 0);
+        this.onStart.call(this, now(), 0);
         return this;
     }
 
     stop() {
         mainLoop.remove(this);
-        this.onStop(now(), 0);
+        this.onStop.call(this, now(), 0);
         return this;
     }
 
     update(timestamp, tick) {
-        this.onUpdate(timestamp, tick);
+        this.onUpdate.call(this, timestamp, tick);
         return this;
     }
 
     complete(timestamp, tick) {
-        this.onComplete(timestamp, tick);
+        this.onComplete.call(this, timestamp, tick);
         return this;
     }
 
@@ -398,23 +398,19 @@ Tween.defaults = {
 
 const compute = [
     // forward
-    function(value) {
-        return value;
-    },
+    value => value,
     // backward
-    function(value) {
-        return 1 - value;
-    }
+    value => 1 - value
 ];
 
 function getElements (element, context) {
     return typeof element === 'string' ? (context || document).querySelectorAll(element) : element.length >= 0 ? element : [element];
 }
 
-const instances = [];
+const instances$2 = [];
 
 class ThrottledEvent extends MainLoopEntry {
-    constructor(target, eventType) {
+    constructor(target, eventType, name) {
         super();
         
         const events = {};
@@ -432,15 +428,16 @@ class ThrottledEvent extends MainLoopEntry {
         this._target = target;
         this._eventType = eventType;
         this._event = null;
+        this._name = name || '';
 
         this._target.addEventListener(this._eventType, this._onEvent, {passive: true});
     }
 
     destroy() {
-        const index = instances.indexOf(this);
+        const index = instances$2.indexOf(this);
 
         if (index > -1) {
-            instances.splice(index,  1);
+            instances$2.splice(index,  1);
         }
 
         this._target.removeEventListener(this._eventType, this._onEvent);
@@ -474,13 +471,13 @@ class ThrottledEvent extends MainLoopEntry {
 
     update(timestamp, tick) {
         dispatch(this._events[this._eventType], this._event);
-        this.onUpdate(timestamp, tick);
+        super.update(timestamp, tick);
         return this;
     }
 
     complete(timestamp, tick) {
         dispatch(this._events[this._eventType + 'end'], this._event);
-        this.onComplete(timestamp, tick);
+        super.complete(timestamp, tick);
         return this;
     }
 
@@ -489,28 +486,30 @@ class ThrottledEvent extends MainLoopEntry {
     }
 }
 
-ThrottledEvent.getInstance = function(target, eventType) {
-    let instance;
+ThrottledEvent.getInstance = function(target, eventType, name) {
+    let found;
 
-    for (let i = 0; i < instances.length; i++) {
-        if (instances[i]._eventType === eventType && instances[i]._target === target) {
-            instance = instances[i];
+    name = name || '';
+
+    for (let i = 0; i < instances$2.length; i++) {
+        let instance = instances$2[i];
+        if (instance._eventType === eventType && instance._target === target && instance._name === name) {
+            found = instances$2[i];
 			break;
         }
     }
 
-    if (!instance) {
-        instance = new ThrottledEvent(target, eventType);
-        
-        instances.push(instance);
+    if (!found) {
+        found = new ThrottledEvent(target, eventType, name);
+        instances$2.push(found);
     }
 
-    return instance;
+    return found;
 };
 
 ThrottledEvent.destroy = function() {
-    while (instances[0]) {
-        instances[0].destroy();
+    while (instances$2[0]) {
+        instances$2[0].destroy();
     }
 };
 
@@ -543,6 +542,104 @@ function onEvent(e) {
     this._timer = setTimeout(this._reset, 128);
 }
 
+class Vector2 {
+    constructor(x, y) {
+        this.x = x || 0;
+        this.y = typeof y === 'number' ? y : this.x;
+    }
+
+    set(x, y) {
+        this.x = x;
+        this.y = y;
+        return this
+    }
+
+    add(v) {
+        this.x += v.x;
+        this.y += v.y;
+        return this
+    }
+
+    addScalar(s) {
+        this.x += s;
+        this.y += s;
+        return this
+    }
+
+    subtract(v) {
+        this.x -= v.x;
+        this.y -= v.y;
+        return this
+    }
+
+    subtractScalar(s) {
+        this.x -= s;
+        this.y -= s;
+        return this
+    }
+
+    multiply(v) {
+        this.x *= v.x;
+        this.y *= v.y;
+        return this
+    }
+
+    multiplyScalar(s) {
+        this.x *= s;
+        this.y *= s;
+        return this
+    }
+
+    divide(v) {
+        this.x /= v.x;
+        this.y /= v.y;
+        return this
+    }
+
+    divideScalar(s) {
+        this.x /= s;
+        this.y /= s;
+        return this
+    }
+
+    magnitude() {
+        return Math.sqrt(this.x * this.x + this.y * this.y)
+    }
+
+    normalize() {
+        return this.divideScalar(this.magnitude())
+    }
+
+    reverse() {
+        return this.multiplyScalar(-1)
+    }
+
+    copy(v) {
+        this.x = v.x;
+        this.y = v.y;
+        return this
+    }
+
+    clone() {
+        return new Vector2(this.x, this.y)
+    }
+
+    angle() {
+        var angle = Math.atan2(this.y, this.x);
+
+        if (angle < 0) angle += 2 * Math.PI;
+
+        return angle
+    }
+
+    rotate(angle) {
+        var x = this.x;
+        this.x = x * Math.cos(angle) - this.y * Math.sin(angle);
+        this.y = x * Math.sin(angle) + this.y * Math.cos(angle);
+        return this
+    }
+}
+
 class ScrollObserverEntry {
     constructor(element, options, scrollInfos) {
         assign(this, ScrollObserverEntry.defaults, options);
@@ -558,15 +655,29 @@ class ScrollObserverEntry {
         const
             bounding = this.element.getBoundingClientRect(),
             scrollY = window.pageYOffset,
-            height = window.innerHeight;
+            height = window.innerHeight,
+            scrollX = window.pageXOffset,
+            width = window.innerWidth;
         
         // start and distance Relative To Window 
-        this.distanceRTW = height + bounding.bottom - bounding.top;
-        this.startRTW = bounding.bottom - this.distanceRTW + scrollY;
+        this.distanceRTW = new Vector2(
+            width + bounding.right - bounding.left,
+            height + bounding.bottom - bounding.top
+        );
+        this.startRTW = new Vector2(
+            bounding.right - this.distanceRTW.x + scrollX,
+            bounding.bottom - this.distanceRTW.y + scrollY
+        );
 
         // start end distance Relative To Element
-        this.startRTE = Math.max(bounding.top + scrollY - height, 0);
-        this.distanceRTE = Math.min(bounding.bottom + scrollY - this.startRTE, document.documentElement.scrollHeight - height);
+        this.startRTE = new Vector2(
+            Math.max(bounding.left + scrollX - width, 0),
+            Math.max(bounding.top + scrollY - height, 0)
+        );
+        this.distanceRTE = new Vector2(
+            Math.min(bounding.right + scrollX - this.startRTE.x, document.documentElement.scrollWidth - width),
+            Math.min(bounding.bottom + scrollY - this.startRTE.y, document.documentElement.scrollHeight - height)
+        );
 
         this.control(scrollInfos);
 
@@ -575,10 +686,11 @@ class ScrollObserverEntry {
 
     control(scrollInfos) {
         const
-            p1 = (scrollInfos.y - this.startRTW) / this.distanceRTW,
-            p2 = (scrollInfos.y - this.startRTE) / this.distanceRTE;
+            scroll = scrollInfos.scroll,
+            p1 = scroll.clone().subtract(this.startRTW).divide(this.distanceRTW),
+            p2 = scroll.clone().subtract(this.startRTE).divide(this.distanceRTE);
 
-        if (p1 >= 0 && p1 <= 1) {
+        if (p1.x >= 0 && p1.x <= 1 && p1.y >= 0 && p1.y <= 1) {
             if (!this._isVisible) {
                 this._isVisible = true;
                 this.onVisibilityStart.call(this, scrollInfos, round(p1), round(p2));
@@ -609,13 +721,13 @@ ScrollObserverEntry.defaults = {
 };
 
 function round(v) {
-    return Math.abs(Math.round(v));
+    return v.clone().set(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)));
 }
 
 const
 	instances$1 = [];
 let autoRefreshTimer = null,
-    resize = null,
+    resize$1 = null,
     scroll = null;
 
 class ScrollObserver extends MainLoopEntry {
@@ -626,15 +738,14 @@ class ScrollObserver extends MainLoopEntry {
         this._entries = [];
         this._onScroll = this.start.bind(this);
         this._onResize = this.refresh.bind(this);
-        this._lastScrollY = 0;
+        this._lastScroll = new Vector2(0, 0);
         this._needsUpdate = true;
+        this._lastSize = getDocumentScroll();
 
-        if (instances$1.length === 0) {
-            resize = new ThrottledEvent(window, 'resize');
-            scroll = new ThrottledEvent(window, 'scroll');
-        }
+        resize$1 = resize$1 || new ThrottledEvent(window, 'resize');
+        scroll = scroll || new ThrottledEvent(window, 'scroll');
 
-        resize.add('resize', this._onResize);
+        resize$1.add('resize', this._onResize);
         scroll.add('scrollstart', this._onScroll);
 
         instances$1.push(this);
@@ -649,11 +760,11 @@ class ScrollObserver extends MainLoopEntry {
 
             if (instances$1.length === 0) {
                 ScrollObserver.stopAutoRefresh();
-                resize.destroy();
+                resize$1.destroy();
                 scroll.destroy();
-                resize = scroll = null;
+                resize$1 = scroll = null;
             } else {
-                resize.remove('resize', this._onResize);
+                resize$1.remove('resize', this._onResize);
                 scroll.remove('scrollstart', this._onScroll);
             }
         }
@@ -662,11 +773,11 @@ class ScrollObserver extends MainLoopEntry {
     observe(element, options) {
         const
             els = getElements(element),
-            scroll = this.getScrollInfos();
+            scrollInfos = this.getScrollInfos();
 
         for (let i = 0; i < els.length; i++) {
             if (this._elements.indexOf(els[i]) === -1) {
-                this._entries.push(new ScrollObserverEntry(els[i], options, scroll));
+                this._entries.push(new ScrollObserverEntry(els[i], options, scrollInfos));
                 this._elements.push(els[i]);
             }
         }
@@ -689,21 +800,26 @@ class ScrollObserver extends MainLoopEntry {
     }
 
     update(timestamp, tick) {
-        this.onUpdate(timestamp, tick);
+        super.update(timestamp, tick);
 
-        const scroll = this.getScrollInfos();
+        const infos = this.getScrollInfos();
 
         for (let i = 0; i < this._entries.length; i++) {
-            this._entries[i].control(scroll);
+            this._entries[i].control(infos);
         }
 
-        this._lastScrollY = scroll.y;
+        this._lastScroll.copy(infos.scroll);
 
         return this;
     }
 
     needsUpdate(timestamp) {
-        return this._needsUpdate && scroll.needsUpdate() || this.scrollDivider > 1 && Math.abs(window.pageYOffset - this._lastScrollY) > 1;
+        return this._needsUpdate && 
+            scroll.needsUpdate() || 
+            this.scrollDivider > 1 && (
+                Math.abs(window.pageXOffset - this._lastScroll.x) > 1 || 
+                Math.abs(window.pageYOffset - this._lastScroll.y) > 1
+            );
     }
 
     hasEntry() {
@@ -712,13 +828,22 @@ class ScrollObserver extends MainLoopEntry {
 
     getScrollInfos() {
         const
-            y = this._lastScrollY + (window.pageYOffset - this._lastScrollY) / this.scrollDivider,
-            deltaY = y - this._lastScrollY;
+            lastScroll = this._lastScroll,
+            scroll = new Vector2(
+                    window.pageXOffset, 
+                    window.pageYOffset
+                )
+                .subtract(lastScroll)
+                .divideScalar(this.scrollDivider)
+                .add(lastScroll),
+            delta = scroll
+                .clone()
+                .subtract(lastScroll);
         
         return {
-            y: y,
-            deltaY: deltaY,
-            directionY: deltaY / Math.abs(deltaY) || 0
+            scroll: scroll,
+            delta: delta,
+            direction: new Vector2(delta.x / Math.abs(delta.x) || 0, delta.y / Math.abs(delta.y) || 0)
         }
     }
 
@@ -729,7 +854,7 @@ class ScrollObserver extends MainLoopEntry {
             this._entries[i].refresh(scrollInfos);
         }
 
-        this.onRefresh(scrollInfos);
+        this.onRefresh.call(this, scrollInfos);
 
         return this;
     }
@@ -743,31 +868,29 @@ ScrollObserver.defaults = {
 // ----
 // utils
 // ----
-function getDocumentHeight() {
-    const
-        html = document.documentElement,
-        body = document.body;
-
-    return Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+function getDocumentScroll() {
+    return new Vector2(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
 }
-
 // ----
 // statics
 // ----
 ScrollObserver.autoRefreshDelay = 1000;
 
 ScrollObserver.startAutoRefresh = function() {
+    let lastSize = getDocumentScroll();
+
     if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
-        let lastDocumentHeight = getDocumentHeight();
-
         autoRefreshTimer = setInterval(function() {
-            const height = getDocumentHeight();
+            const size = getDocumentScroll();
 
-            if (height !== lastDocumentHeight) {
+            if (lastSize.x !== size.x || lastSize.y !== size.y) {
+                console.log('size change');
+
                 for (let i = 0; i < instances$1.length; i++) {
                     instances$1[i].refresh();
                 }
-                lastDocumentHeight = height;
+
+                lastSize = size;
             }
         }, ScrollObserver.autoRefreshDelay);
     }
@@ -787,10 +910,10 @@ ScrollObserver.destroy = function() {
 };
 
 const 
-    instances$2 = [],
+    instances = [],
     specialCharRegExp = /(((?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])((\u200D(\u2640|\u2642)\uFE0F)|[]))|&([a-zA-Z]{2,6}|#[0-9]{2,5});|<|>)/g,
     whiteCharRegExp = /(\s)/;
-let resize$1 = null;
+let resize = null;
     
 
 class SplittedText {
@@ -801,31 +924,31 @@ class SplittedText {
         this._element = element;
         this._onResize = this.split.bind(this);
 
-        if (!resize$1) {
-            resize$1 = new ThrottledEvent(window, 'resize');
+        if (!resize) {
+            resize = new ThrottledEvent(window, 'resize');
         }
 
         if (this.autoSplit) {
             this.split();
         }
 
-        instances$2.push(this);
+        instances.push(this);
     }
 
     destroy() {
         this.restore();
 
-        instances$2.splice(instances$2.indexOf(this),  1);
+        instances.splice(instances.indexOf(this),  1);
 
-        if (!instances$2.length) {
-            resize$1.destroy();
-            resize$1 = null;
+        if (!instances.length) {
+            resize.destroy();
+            resize = null;
         }
     }
 
     restore() {
         this._element.innerHTML = this._originalInnerHTML;
-        resize$1.remove('resize', this._onResize);
+        resize.remove('resize', this._onResize);
 
         return this;
     }
@@ -845,7 +968,7 @@ class SplittedText {
                 html = '',
                 lastOffsetTop = children[0].offsetTop;
 
-            resize$1.add('resize', this._onResize);
+            resize.add('resize', this._onResize);
 
             for (let i = 0; i < children.length; i++) {
 				const
@@ -987,9 +1110,9 @@ function wrapByWord(element, wrapper) {
 // static
 // ----
 SplittedText.destroy = function() {
-    while (instances$2[0]) {
-        instances$2[0].destroy();
+    while (instances[0]) {
+        instances[0].destroy();
     }
 };
 
-export { MainLoopEntry, ScrollObserver, SplittedText, ThrottledEvent, Tween, easings };
+export { MainLoopEntry, ScrollObserver, SplittedText, ThrottledEvent, Tween, Vector2, easings };

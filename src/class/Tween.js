@@ -111,13 +111,9 @@ Tween.defaults = {
 
 const compute = [
     // forward
-    function(value) {
-        return value;
-    },
+    value => value,
     // backward
-    function(value) {
-        return 1 - value;
-    }
+    value => 1 - value
 ];
 
 export default Tween;

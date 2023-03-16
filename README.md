@@ -11,6 +11,8 @@ OneLoop.js
 
 The aim of the project is to create an easy to use, lightweight, cross-browser, animation library. The following documentation is not exhaustive, but provide the basic informations to use the library. Take a look at the code if you want to know more.
 
+Check out some examples on [codepen](https://codepen.io/collection/zxWBGm)
+
 ## ScrollObserver
 
 This code will create a scroll observer :
