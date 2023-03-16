@@ -166,8 +166,6 @@ ScrollObserver.startAutoRefresh = function() {
             const size = getDocumentScroll();
 
             if (lastSize.x !== size.x || lastSize.y !== size.y) {
-                console.log('size change');
-
                 for (let i = 0; i < instances.length; i++) {
                     instances[i].refresh();
                 }
