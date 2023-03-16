@@ -7,7 +7,7 @@ export default {
         return code.replace(/\._([a-zA-Z0-9]*)/g, function(match) {
 
             if (typeof old[match] === 'undefined') {
-                old[match] = i;
+                old[match] = i % 26;
                 i++;
             }
 
