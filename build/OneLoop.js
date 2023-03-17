@@ -28,144 +28,166 @@ var easings = (function() {
             d1 = 2.75;
 
         if (x < 1 / d1) {
-            return n1 * x * x;
+            return n1 * x * x
         } else if (x < 2 / d1) {
-            return n1 * (x -= 1.5 / d1) * x + 0.75;
+            return n1 * (x -= 1.5 / d1) * x + 0.75
         } else if (x < 2.5 / d1) {
-            return n1 * (x -= 2.25 / d1) * x + 0.9375;
+            return n1 * (x -= 2.25 / d1) * x + 0.9375
         } else {
-            return n1 * (x -= 2.625 / d1) * x + 0.984375;
+            return n1 * (x -= 2.625 / d1) * x + 0.984375
         }
     }
 
     return {
         linear(x) {
-            return x;
+            return x
         },
         easeInQuad(x) {
-            return x * x;
+            return x * x
         },
         easeOutQuad(x) {
-            return 1 - (1 - x) * (1 - x);
+            return 1 - (1 - x) * (1 - x)
         },
         easeInOutQuad(x) {
-            return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
+            return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2
         },
         easeInCubic(x) {
-            return x * x * x;
+            return x * x * x
         },
         easeOutCubic(x) {
-            return 1 - pow(1 - x, 3);
+            return 1 - pow(1 - x, 3)
         },
         easeInOutCubic(x) {
-            return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2;
+            return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2
         },
         easeInQuart(x) {
-            return x * x * x * x;
+            return x * x * x * x
         },
         easeOutQuart(x) {
-            return 1 - pow(1 - x, 4);
+            return 1 - pow(1 - x, 4)
         },
         easeInOutQuart(x) {
-            return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2;
+            return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2
         },
         easeInQuint(x) {
-            return x * x * x * x * x;
+            return x * x * x * x * x
         },
         easeOutQuint(x) {
-            return 1 - pow(1 - x, 5);
+            return 1 - pow(1 - x, 5)
         },
         easeInOutQuint(x) {
-            return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2;
+            return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2
         },
         easeInSine(x) {
-            return 1 - cos((x * PI) / 2);
+            return 1 - cos((x * PI) / 2)
         },
         easeOutSine(x) {
-            return sin((x * PI) / 2);
+            return sin((x * PI) / 2)
         },
         easeInOutSine(x) {
-            return -(cos(PI * x) - 1) / 2;
+            return -(cos(PI * x) - 1) / 2
         },
         easeInExpo(x) {
-            return x === 0 ? 0 : pow(2, 10 * x - 10);
+            return x === 0 ? 0 : pow(2, 10 * x - 10)
         },
         easeOutExpo(x) {
-            return x === 1 ? 1 : 1 - pow(2, -10 * x);
+            return x === 1 ? 1 : 1 - pow(2, -10 * x)
         },
         easeInOutExpo(x) {
             return x === 0
                 ? 0
                 : x === 1
-                ? 1
-                : x < 0.5
-                ? pow(2, 20 * x - 10) / 2
-                : (2 - pow(2, -20 * x + 10)) / 2;
+                    ? 1
+                    : x < 0.5
+                        ? pow(2, 20 * x - 10) / 2
+                        : (2 - pow(2, -20 * x + 10)) / 2
         },
         easeInCirc(x) {
-            return 1 - sqrt(1 - pow(x, 2));
+            return 1 - sqrt(1 - pow(x, 2))
         },
         easeOutCirc(x) {
-            return sqrt(1 - pow(x - 1, 2));
+            return sqrt(1 - pow(x - 1, 2))
         },
         easeInOutCirc(x) {
             return x < 0.5
                 ? (1 - sqrt(1 - pow(2 * x, 2))) / 2
-                : (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2;
+                : (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2
         },
         easeInBack(x) {
-            return c3 * x * x * x - c1 * x * x;
+            return c3 * x * x * x - c1 * x * x
         },
         easeOutBack(x) {
-            return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
+            return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2)
         },
         easeInOutBack(x) {
             return x < 0.5
                 ? (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
-                : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+                : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2
         },
         easeInElastic(x) {
             return x === 0
                 ? 0
                 : x === 1
-                ? 1
-                : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
+                    ? 1
+                    : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4)
         },
         easeOutElastic(x) {
             return x === 0
                 ? 0
                 : x === 1
-                ? 1
-                : pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
+                    ? 1
+                    : pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1
         },
         easeInOutElastic(x) {
             return x === 0
                 ? 0
                 : x === 1
-                ? 1
-                : x < 0.5
-                ? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2
-                : (pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5)) / 2 + 1;
+                    ? 1
+                    : x < 0.5
+                        ? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2
+                        : (pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5)) / 2 + 1
         },
         easeInBounce(x) {
-            return 1 - bounceOut(1 - x);
+            return 1 - bounceOut(1 - x)
         },
         easeOutBounce: bounceOut,
         easeInOutBounce(x) {
             return x < 0.5
                 ? (1 - bounceOut(1 - 2 * x)) / 2
-                : (1 + bounceOut(2 * x - 1)) / 2;
+                : (1 + bounceOut(2 * x - 1)) / 2
         }
-    };
+    }
 
 })();
 
 function now() {
-    return performance.now();
+    return performance.now()
 }
 
-const entries = [];
-let raf = null;
+const 
+    entries = [];
+let raf = null,
+    lastTime = null;
+
+function loop(timestamp) {
+    const tick = (timestamp - lastTime) / 16.66;
+        
+    for (let i = 0; i < entries.length; i++) {					
+        if (entries[i].needsUpdate(timestamp)) {
+            entries[i].update(timestamp, tick);
+        } else {
+            entries.splice(i, 1)[0].complete(timestamp, tick);
+            i--;
+        }
+    }
+
+    if (entries.length) {
+        lastTime = timestamp;
+        raf = requestAnimationFrame(loop);
+    } else {
+        raf = null;
+    }
+}
 
 var mainLoop = {
     add(entry) {
@@ -177,7 +199,7 @@ var mainLoop = {
             }
         }
 
-        return this;
+        return this
     },
 
     remove(entry) {
@@ -187,44 +209,22 @@ var mainLoop = {
             entries.splice(index, 1);
         }
 
-        return this;
+        return this
     },
 
     start() {
         if (raf === null) { 
-
-            let lastTime = now();
-            
-            function loop(timestamp) {
-                const tick = (timestamp - lastTime) / 16.66;
-                    
-                for (let i = 0; i < entries.length; i++) {					
-                    if (entries[i].needsUpdate(timestamp)) {
-                        entries[i].update(timestamp, tick);
-                    } else {
-                        entries.splice(i, 1)[0].complete(timestamp, tick);
-                        i--;
-                    }
-                }
-
-                if (entries.length) {
-                    lastTime = timestamp;
-                    raf = requestAnimationFrame(loop);
-                } else {
-                    raf = null;
-                }
-            }
-
+            lastTime = now();
             raf = requestAnimationFrame(loop);
         }
 
-        return this;
+        return this
     },
 
     stop() {
         cancelAnimationFrame(raf);
         raf = null;
-        return this;
+        return this
     },
 
     destroy() {
@@ -247,7 +247,7 @@ function assign() {
         }
     }
 
-    return rt;
+    return rt
 }
 
 function noop(){}
@@ -260,27 +260,27 @@ class MainLoopEntry {
     start() {
         mainLoop.add(this);
         this.onStart.call(this, now(), 0);
-        return this;
+        return this
     }
 
     stop() {
         mainLoop.remove(this);
         this.onStop.call(this, now(), 0);
-        return this;
+        return this
     }
 
     update(timestamp, tick) {
         this.onUpdate.call(this, timestamp, tick);
-        return this;
+        return this
     }
 
     complete(timestamp, tick) {
         this.onComplete.call(this, timestamp, tick);
-        return this;
+        return this
     }
 
-    needsUpdate(timestamp) {
-        return true;
+    needsUpdate() {
+        return true
     }
 }
 
@@ -316,13 +316,13 @@ class Tween extends MainLoopEntry {
         mainLoop.remove(this);
         this.onUpdate(0, 0, 0);
 
-        return this;
+        return this
     }
 
     pause() {
         this._pauseTime = now();
         mainLoop.remove(this);
-        return this;
+        return this
     }
 
     start(delay) {
@@ -351,7 +351,7 @@ class Tween extends MainLoopEntry {
             setTimeout(this.start.bind(this, 0), delay);
         }
 
-        return this;
+        return this
     }
 
     update(timestamp, tick) {
@@ -363,7 +363,7 @@ class Tween extends MainLoopEntry {
 
         this.onUpdate(timestamp, tick, percent);
 
-        return this;
+        return this
     }
 
     complete(timestamp, tick) {
@@ -379,11 +379,11 @@ class Tween extends MainLoopEntry {
             this.start();
         }
 
-        return this;
+        return this
     }
 
     needsUpdate(timestamp) {
-        return timestamp - (this._startTime + this._pauseDuration) < this.duration * this._range;
+        return timestamp - (this._startTime + this._pauseDuration) < this.duration * this._range
     }
 }
 
@@ -404,7 +404,7 @@ const compute = [
 ];
 
 function getElements (element, context) {
-    return typeof element === 'string' ? (context || document).querySelectorAll(element) : element.length >= 0 ? element : [element];
+    return typeof element === 'string' ? (context || document).querySelectorAll(element) : element.length >= 0 ? element : [element]
 }
 
 const instances$2 = [];
@@ -437,7 +437,7 @@ class ThrottledEvent extends MainLoopEntry {
         const index = instances$2.indexOf(this);
 
         if (index > -1) {
-            instances$2.splice(index,  1);
+            instances$2.splice(index, 1);
         }
 
         this._target.removeEventListener(this._eventType, this._onEvent);
@@ -448,7 +448,7 @@ class ThrottledEvent extends MainLoopEntry {
             this._events[when].push(callback);
         }
 
-        return this;
+        return this
     }
 
     remove(when, callback) {
@@ -458,7 +458,7 @@ class ThrottledEvent extends MainLoopEntry {
             this._events[when].splice(index, 1);
         }
 
-        return this;
+        return this
     }
 
     hasEvent() {
@@ -466,23 +466,23 @@ class ThrottledEvent extends MainLoopEntry {
             events = this._events,
             eventType = this._eventType;
 
-        return events[eventType + 'start'].length + events[eventType].length + events[eventType + 'end'].length > 0;
+        return events[eventType + 'start'].length + events[eventType].length + events[eventType + 'end'].length > 0
     }
 
     update(timestamp, tick) {
         dispatch(this._events[this._eventType], this._event);
         super.update(timestamp, tick);
-        return this;
+        return this
     }
 
     complete(timestamp, tick) {
         dispatch(this._events[this._eventType + 'end'], this._event);
         super.complete(timestamp, tick);
-        return this;
+        return this
     }
 
-    needsUpdate(timestamp) {
-        return this._needsUpdate;
+    needsUpdate() {
+        return this._needsUpdate
     }
 }
 
@@ -495,7 +495,7 @@ ThrottledEvent.getInstance = function(target, eventType, name) {
         let instance = instances$2[i];
         if (instance._eventType === eventType && instance._target === target && instance._name === name) {
             found = instances$2[i];
-			break;
+            break
         }
     }
 
@@ -504,7 +504,7 @@ ThrottledEvent.getInstance = function(target, eventType, name) {
         instances$2.push(found);
     }
 
-    return found;
+    return found
 };
 
 ThrottledEvent.destroy = function() {
@@ -681,7 +681,7 @@ class ScrollObserverEntry {
 
         this.control(scrollInfos);
 
-        return this;
+        return this
     }
 
     control(scrollInfos) {
@@ -708,7 +708,7 @@ class ScrollObserverEntry {
 
         this.onAlways.call(this, scrollInfos, p1, p2);
 
-        return this; 
+        return this 
     }
 }
 
@@ -721,11 +721,11 @@ ScrollObserverEntry.defaults = {
 };
 
 function round(v) {
-    return v.clone().set(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)));
+    return v.clone().set(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)))
 }
 
 const
-	instances$1 = [];
+    instances$1 = [];
 let autoRefreshTimer = null,
     resize$1 = null,
     scroll = null;
@@ -782,7 +782,7 @@ class ScrollObserver extends MainLoopEntry {
             }
         }
 
-        return this;	
+        return this	
     }
 
     unobserve(element) {
@@ -796,7 +796,7 @@ class ScrollObserver extends MainLoopEntry {
             }
         }
 
-        return this;
+        return this
     }
 
     update(timestamp, tick) {
@@ -810,29 +810,29 @@ class ScrollObserver extends MainLoopEntry {
 
         this._lastScroll.copy(infos.scroll);
 
-        return this;
+        return this
     }
 
-    needsUpdate(timestamp) {
+    needsUpdate() {
         return this._needsUpdate && 
             scroll.needsUpdate() || 
             this.scrollDivider > 1 && (
                 Math.abs(window.pageXOffset - this._lastScroll.x) > 1 || 
                 Math.abs(window.pageYOffset - this._lastScroll.y) > 1
-            );
+            )
     }
 
     hasEntry() {
-        return this._entries.length > 0;
+        return this._entries.length > 0
     }
 
     getScrollInfos() {
         const
             lastScroll = this._lastScroll,
             scroll = new Vector2(
-                    window.pageXOffset, 
-                    window.pageYOffset
-                )
+                window.pageXOffset, 
+                window.pageYOffset
+            )
                 .subtract(lastScroll)
                 .divideScalar(this.scrollDivider)
                 .add(lastScroll),
@@ -856,7 +856,7 @@ class ScrollObserver extends MainLoopEntry {
 
         this.onRefresh.call(this, scrollInfos);
 
-        return this;
+        return this
     }
 }
 
@@ -869,7 +869,7 @@ ScrollObserver.defaults = {
 // utils
 // ----
 function getDocumentScroll() {
-    return new Vector2(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
+    return new Vector2(document.documentElement.scrollWidth, document.documentElement.scrollHeight)
 }
 // ----
 // statics
@@ -892,13 +892,13 @@ ScrollObserver.startAutoRefresh = function() {
             }
         }, ScrollObserver.autoRefreshDelay);
     }
-    return this;
+    return this
 };
 
 ScrollObserver.stopAutoRefresh = function() {
     clearInterval(autoRefreshTimer);
     autoRefreshTimer = null;
-    return this;
+    return this
 };
 
 ScrollObserver.destroy = function() {
@@ -906,6 +906,8 @@ ScrollObserver.destroy = function() {
         instances$1[0].destroy();
     }
 };
+
+/* eslint-disable no-empty-character-class */
 
 const 
     instances = [],
@@ -936,7 +938,7 @@ class SplittedText {
     destroy() {
         this.restore();
 
-        instances.splice(instances.indexOf(this),  1);
+        instances.splice(instances.indexOf(this), 1);
 
         if (!instances.length) {
             resize.destroy();
@@ -948,7 +950,7 @@ class SplittedText {
         this._element.innerHTML = this._originalInnerHTML;
         resize.remove('resize', this._onResize);
 
-        return this;
+        return this
     }
 
     split() {
@@ -969,23 +971,23 @@ class SplittedText {
             resize.add('resize', this._onResize);
 
             for (let i = 0; i < children.length; i++) {
-				const
-					child = children[i],
-				    offsetTop = child.offsetTop,
+                const
+                    child = children[i],
+                    offsetTop = child.offsetTop,
                     isBR = child.tagName === 'BR';
 
-				if (lastOffsetTop !== offsetTop || isBR) {
-					html += lineWrapper(line.substring(-1), ' ');
-					line = '';
-				}
+                if (lastOffsetTop !== offsetTop || isBR) {
+                    html += lineWrapper(line.substring(-1), ' ');
+                    line = '';
+                }
 
-				if (!isBR) {
-					line += child.outerHTML + ' ';
-				} else {
-					html += '<br />';
-				}
+                if (!isBR) {
+                    line += child.outerHTML + ' ';
+                } else {
+                    html += '<br />';
+                }
 
-				lastOffsetTop = offsetTop;
+                lastOffsetTop = offsetTop;
             }
 
             element.innerHTML = html + lineWrapper(line, '');
@@ -999,14 +1001,14 @@ class SplittedText {
         if (this.byChar) {
             element.innerHTML = wrapSpecialChar(element, this.charWrapper);
             element.innerHTML = split(
-				element,
-				'',
-				char => !whiteCharRegExp.test(char) ? this.charWrapper(char) : char,
-				this.preserve
-			);
+                element,
+                '',
+                char => !whiteCharRegExp.test(char) ? this.charWrapper(char) : char,
+                this.preserve
+            );
         }
 
-        return this;
+        return this
     }
 }
 
@@ -1017,13 +1019,13 @@ SplittedText.defaults = {
     byChar: false,
     preserve: 'st-char',
     lineWrapper(line) {
-        return '<span class="st-line">' + line + '</span>';
+        return '<span class="st-line">' + line + '</span>'
     },
     wordWrapper(word) {
-        return '<span class="st-word">' + word + '</span>';
+        return '<span class="st-word">' + word + '</span>'
     },
     charWrapper(char) {
-        return '<span class="st-char">' + char + '</span>';
+        return '<span class="st-char">' + char + '</span>'
     },
 };
 
@@ -1045,7 +1047,7 @@ function traverseNode(element, textCallback, nodeCallback) {
         }
     }
     
-    return html;
+    return html
 }
 
 function preserveCode(element) {
@@ -1053,7 +1055,7 @@ function preserveCode(element) {
         element,
         text => text.replace('<', '[<]'),
         child => getNewOuterHTML(child, preserveCode(child))
-    );
+    )
 }
 
 function wrapSpecialChar(element, wrapper) {
@@ -1061,27 +1063,27 @@ function wrapSpecialChar(element, wrapper) {
         element,
         text => text.replace(specialCharRegExp, wrapper),
         child => getNewOuterHTML(child, wrapSpecialChar(child, wrapper))
-    );
+    )
 }
 
 function split(element, separator, wrapper, preserve) {
     return traverseNode(
         element,
         text => {
-			var trimmedText = text.trim();
+            const trimmedText = text.trim();
 
             return trimmedText !== '' ?
                 (separator === '' ? text : trimmedText).split(separator).map(wrapper).join(separator) 
                 : 
-                text;
+                text
         },
         child => {
             return preserve && child.classList.contains(preserve) ?
                 child.outerHTML
                 :
-                getNewOuterHTML(child, split(child, separator, wrapper, preserve));
+                getNewOuterHTML(child, split(child, separator, wrapper, preserve))
         }
-    );
+    )
 }
 
 function unwrap(element, className) {
@@ -1089,14 +1091,14 @@ function unwrap(element, className) {
         element,
         text => text,
         child => child.classList.contains(className) ?
-			child.innerHTML
-			:
-			getNewOuterHTML(child, unwrap(child, className))
-    );
+            child.innerHTML
+            :
+            getNewOuterHTML(child, unwrap(child, className))
+    )
 }
 
 function getNewOuterHTML(node, strReplacement) {
-    return node.outerHTML.replace('>' + node.innerHTML + '<', '>' + strReplacement + '<');
+    return node.outerHTML.replace('>' + node.innerHTML + '<', '>' + strReplacement + '<')
 }
 
 function wrapByWord(element, wrapper) {
