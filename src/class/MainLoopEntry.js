@@ -35,6 +35,9 @@ class MainLoopEntry {
     }
 }
 
+// ----
+// defaults
+// ----
 MainLoopEntry.defaults = {
     onStart: noop,
     onUpdate: noop,
