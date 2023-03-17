@@ -142,6 +142,9 @@ class ScrollObserver extends MainLoopEntry {
     }
 }
 
+// ----
+// defaults
+// ----
 ScrollObserver.defaults = {
     scrollDivider: 1,
     onRefresh: noop
@@ -153,6 +156,7 @@ ScrollObserver.defaults = {
 function getDocumentScroll() {
     return new Vector2(document.documentElement.scrollWidth, document.documentElement.scrollHeight)
 }
+
 // ----
 // statics
 // ----

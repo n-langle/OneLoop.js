@@ -100,6 +100,9 @@ class Tween extends MainLoopEntry {
     }
 }
 
+// ----
+// defaults
+// ----
 Tween.defaults = {
     delay: 0,
     duration: 1000,
@@ -109,6 +112,9 @@ Tween.defaults = {
     autoStart: true
 }
 
+// ----
+// utils
+// ----
 const compute = [
     // forward
     value => value,

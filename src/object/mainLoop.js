@@ -5,6 +5,9 @@ const
 let raf = null,
     lastTime = null
 
+// ----
+// the loop
+// ----
 function loop(timestamp) {
     const tick = (timestamp - lastTime) / 16.66
         

@@ -18,6 +18,7 @@ module.exports = {
         'no-console': 'error',
         'no-duplicate-imports': 'error',
         'no-multi-spaces': 'error',
+        'no-multiple-empty-lines': 'error',
         'quotes': ['error', 'single'],
         'semi': ['error', 'never']
     }

@@ -79,6 +79,9 @@ class ThrottledEvent extends MainLoopEntry {
     }
 }
 
+// ----
+// statics
+// ----
 ThrottledEvent.getInstance = function(target, eventType, name) {
     let found
 

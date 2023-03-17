@@ -169,6 +169,9 @@ const
 let raf = null,
     lastTime = null;
 
+// ----
+// the loop
+// ----
 function loop(timestamp) {
     const tick = (timestamp - lastTime) / 16.66;
         
@@ -387,6 +390,9 @@ class Tween extends MainLoopEntry {
     }
 }
 
+// ----
+// defaults
+// ----
 Tween.defaults = {
     delay: 0,
     duration: 1000,
@@ -396,6 +402,9 @@ Tween.defaults = {
     autoStart: true
 };
 
+// ----
+// utils
+// ----
 const compute = [
     // forward
     value => value,
@@ -486,6 +495,9 @@ class ThrottledEvent extends MainLoopEntry {
     }
 }
 
+// ----
+// statics
+// ----
 ThrottledEvent.getInstance = function(target, eventType, name) {
     let found;
 
@@ -712,6 +724,9 @@ class ScrollObserverEntry {
     }
 }
 
+// ----
+// defaults
+// ----
 ScrollObserverEntry.defaults = {
     children: '',
     onVisible: noop,
@@ -720,6 +735,9 @@ ScrollObserverEntry.defaults = {
     onAlways: noop
 };
 
+// ----
+// utils
+// ----
 function round(v) {
     return v.clone().set(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)))
 }
@@ -860,6 +878,9 @@ class ScrollObserver extends MainLoopEntry {
     }
 }
 
+// ----
+// defaults
+// ----
 ScrollObserver.defaults = {
     scrollDivider: 1,
     onRefresh: noop
@@ -871,6 +892,7 @@ ScrollObserver.defaults = {
 function getDocumentScroll() {
     return new Vector2(document.documentElement.scrollWidth, document.documentElement.scrollHeight)
 }
+
 // ----
 // statics
 // ----
@@ -915,7 +937,6 @@ const
     whiteCharRegExp = /(\s)/;
 let resize = null;
     
-
 class SplittedText {
     constructor(element, options) {
         assign(this, SplittedText.defaults, options);
@@ -1012,6 +1033,9 @@ class SplittedText {
     }
 }
 
+// ----
+// defaults
+// ----
 SplittedText.defaults = {
     autoSplit: true,
     byLine: false,

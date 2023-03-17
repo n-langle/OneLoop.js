@@ -75,6 +75,9 @@ class ScrollObserverEntry {
     }
 }
 
+// ----
+// defaults
+// ----
 ScrollObserverEntry.defaults = {
     children: '',
     onVisible: noop,
@@ -83,6 +86,9 @@ ScrollObserverEntry.defaults = {
     onAlways: noop
 }
 
+// ----
+// utils
+// ----
 function round(v) {
     return v.clone().set(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)))
 }

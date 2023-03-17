@@ -8,7 +8,6 @@ const
     whiteCharRegExp = /(\s)/
 let resize = null
     
-
 class SplittedText {
     constructor(element, options) {
         assign(this, SplittedText.defaults, options)
@@ -105,6 +104,9 @@ class SplittedText {
     }
 }
 
+// ----
+// defaults
+// ----
 SplittedText.defaults = {
     autoSplit: true,
     byLine: false,
