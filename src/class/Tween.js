@@ -98,18 +98,18 @@ class Tween extends MainLoopEntry {
     needsUpdate(timestamp) {
         return timestamp - (this._startTime + this._pauseDuration) < this.duration * this._range
     }
-}
 
-// ----
-// defaults
-// ----
-Tween.defaults = {
-    delay: 0,
-    duration: 1000,
-    easing: 'linear',
-    loop: 0,
-    reverse: false,
-    autoStart: true
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		delay: 0,
+		duration: 1000,
+		easing: 'linear',
+		loop: 0,
+		reverse: false,
+		autoStart: true
+	}
 }
 
 // ----

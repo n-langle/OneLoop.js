@@ -4,6 +4,8 @@ import MainLoopEntry from '../class/MainLoopEntry'
 import ThrottledEvent from '../class/ThrottledEvent'
 import ScrollObserverEntry from '../class/ScrollObserverEntry'
 import Vector2 from '../class/Vector2'
+import getWindowScroll from '../function/getWindowScroll'
+import getDocumentScrollSize from '../function/getDocumentScrollSize'
 import noop from '../function/noop'
 
 const
@@ -18,11 +20,11 @@ class ScrollObserver extends MainLoopEntry {
 
         this._elements = []
         this._entries = []
-        this._onScroll = this.start.bind(this)
-        this._onResize = this.refresh.bind(this)
+        this._onScroll = () => this.start()
+        this._onResize = () => this.refresh()
         this._lastScroll = new Vector2(0, 0)
         this._needsUpdate = true
-        this._lastSize = getDocumentScroll()
+        this._lastSize = getDocumentScrollSize()
 
         resize = resize || new ThrottledEvent(window, 'resize')
         scroll = scroll || new ThrottledEvent(window, 'scroll')
@@ -98,10 +100,8 @@ class ScrollObserver extends MainLoopEntry {
     needsUpdate() {
         return this._needsUpdate && 
             scroll.needsUpdate() || 
-            this.scrollDivider > 1 && (
-                Math.abs(window.pageXOffset - this._lastScroll.x) > 1 || 
-                Math.abs(window.pageYOffset - this._lastScroll.y) > 1
-            )
+            this.scrollDivider > 1 && 
+			getWindowScroll().subtract(this._lastScroll).magnitude() > 1
     }
 
     hasEntry() {
@@ -111,10 +111,7 @@ class ScrollObserver extends MainLoopEntry {
     getScrollInfos() {
         const
             lastScroll = this._lastScroll,
-            scroll = new Vector2(
-                window.pageXOffset, 
-                window.pageYOffset
-            )
+            scroll = getWindowScroll()
                 .subtract(lastScroll)
                 .divideScalar(this.scrollDivider)
                 .add(lastScroll),
@@ -140,57 +137,47 @@ class ScrollObserver extends MainLoopEntry {
 
         return this
     }
-}
 
-// ----
-// defaults
-// ----
-ScrollObserver.defaults = {
-    scrollDivider: 1,
-    onRefresh: noop
-}
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		scrollDivider: 1,
+		onRefresh: noop
+	}
 
-// ----
-// utils
-// ----
-function getDocumentScroll() {
-    return new Vector2(document.documentElement.scrollWidth, document.documentElement.scrollHeight)
-}
+	static autoRefreshDelay = 1000
+	
+	static startAutoRefresh() {
+		let lastSize = getDocumentScrollSize()
 
-// ----
-// statics
-// ----
-ScrollObserver.autoRefreshDelay = 1000
+		if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
+			autoRefreshTimer = setInterval(() => {
+				const size = getDocumentScrollSize()
 
-ScrollObserver.startAutoRefresh = function() {
-    let lastSize = getDocumentScroll()
+				if (lastSize.x !== size.x || lastSize.y !== size.y) {
+					for (let i = 0; i < instances.length; i++) {
+						instances[i].refresh()
+					}
 
-    if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
-        autoRefreshTimer = setInterval(function() {
-            const size = getDocumentScroll()
+					lastSize = size
+				}
+			}, ScrollObserver.autoRefreshDelay)
+		}
+		return this
+	}
 
-            if (lastSize.x !== size.x || lastSize.y !== size.y) {
-                for (let i = 0; i < instances.length; i++) {
-                    instances[i].refresh()
-                }
+	static stopAutoRefresh() {
+		clearInterval(autoRefreshTimer)
+		autoRefreshTimer = null
+		return this
+	}
 
-                lastSize = size
-            }
-        }, ScrollObserver.autoRefreshDelay)
-    }
-    return this
-}
-
-ScrollObserver.stopAutoRefresh = function() {
-    clearInterval(autoRefreshTimer)
-    autoRefreshTimer = null
-    return this
-}
-
-ScrollObserver.destroy = function() {
-    while(instances[0]) {
-        instances[0].destroy()
-    }
+	static destroy() {
+		while(instances[0]) {
+			instances[0].destroy()
+		}
+	}
 }
 
 export default ScrollObserver

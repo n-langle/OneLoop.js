@@ -11,16 +11,11 @@
 */
 var easings = (function() {
     const
-        pow = Math.pow,
-        sqrt = Math.sqrt,
-        sin = Math.sin,
-        cos = Math.cos,
-        PI = Math.PI,
         c1 = 1.70158,
         c2 = c1 * 1.525,
         c3 = c1 + 1,
-        c4 = (2 * PI) / 3,
-        c5 = (2 * PI) / 4.5;
+        c4 = (2 * Math.PI) / 3,
+        c5 = (2 * Math.PI) / 4.5;
 
     function bounceOut(x) {
         const
@@ -49,49 +44,49 @@ var easings = (function() {
             return 1 - (1 - x) * (1 - x)
         },
         easeInOutQuad(x) {
-            return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2
+            return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2
         },
         easeInCubic(x) {
             return x * x * x
         },
         easeOutCubic(x) {
-            return 1 - pow(1 - x, 3)
+            return 1 - Math.pow(1 - x, 3)
         },
         easeInOutCubic(x) {
-            return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2
+            return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
         },
         easeInQuart(x) {
             return x * x * x * x
         },
         easeOutQuart(x) {
-            return 1 - pow(1 - x, 4)
+            return 1 - Math.pow(1 - x, 4)
         },
         easeInOutQuart(x) {
-            return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2
+            return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2
         },
         easeInQuint(x) {
             return x * x * x * x * x
         },
         easeOutQuint(x) {
-            return 1 - pow(1 - x, 5)
+            return 1 - Math.pow(1 - x, 5)
         },
         easeInOutQuint(x) {
-            return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2
+            return x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2
         },
         easeInSine(x) {
-            return 1 - cos((x * PI) / 2)
+            return 1 - Math.cos((x * Math.PI) / 2)
         },
         easeOutSine(x) {
-            return sin((x * PI) / 2)
+            return Math.sin((x * Math.PI) / 2)
         },
         easeInOutSine(x) {
-            return -(cos(PI * x) - 1) / 2
+            return -(Math.cos(Math.PI * x) - 1) / 2
         },
         easeInExpo(x) {
-            return x === 0 ? 0 : pow(2, 10 * x - 10)
+            return x === 0 ? 0 : Math.pow(2, 10 * x - 10)
         },
         easeOutExpo(x) {
-            return x === 1 ? 1 : 1 - pow(2, -10 * x)
+            return x === 1 ? 1 : 1 - Math.pow(2, -10 * x)
         },
         easeInOutExpo(x) {
             return x === 0
@@ -99,44 +94,44 @@ var easings = (function() {
                 : x === 1
                     ? 1
                     : x < 0.5
-                        ? pow(2, 20 * x - 10) / 2
-                        : (2 - pow(2, -20 * x + 10)) / 2
+                        ? Math.pow(2, 20 * x - 10) / 2
+                        : (2 - Math.pow(2, -20 * x + 10)) / 2
         },
         easeInCirc(x) {
-            return 1 - sqrt(1 - pow(x, 2))
+            return 1 - Math.sqrt(1 - Math.pow(x, 2))
         },
         easeOutCirc(x) {
-            return sqrt(1 - pow(x - 1, 2))
+            return Math.sqrt(1 - Math.pow(x - 1, 2))
         },
         easeInOutCirc(x) {
             return x < 0.5
-                ? (1 - sqrt(1 - pow(2 * x, 2))) / 2
-                : (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2
+                ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+                : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2
         },
         easeInBack(x) {
             return c3 * x * x * x - c1 * x * x
         },
         easeOutBack(x) {
-            return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2)
+            return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2)
         },
         easeInOutBack(x) {
             return x < 0.5
-                ? (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
-                : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2
+                ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+                : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2
         },
         easeInElastic(x) {
             return x === 0
                 ? 0
                 : x === 1
                     ? 1
-                    : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4)
+                    : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * c4)
         },
         easeOutElastic(x) {
             return x === 0
                 ? 0
                 : x === 1
                     ? 1
-                    : pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1
+                    : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1
         },
         easeInOutElastic(x) {
             return x === 0
@@ -144,8 +139,8 @@ var easings = (function() {
                 : x === 1
                     ? 1
                     : x < 0.5
-                        ? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2
-                        : (pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5)) / 2 + 1
+                        ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * c5)) / 2
+                        : (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 + 1
         },
         easeInBounce(x) {
             return 1 - bounceOut(1 - x)
@@ -160,9 +155,7 @@ var easings = (function() {
 
 })();
 
-function now() {
-    return performance.now()
-}
+var now = () => performance.now();
 
 const 
     entries = [];
@@ -253,7 +246,7 @@ function assign() {
     return rt
 }
 
-function noop(){}
+var noop = () => {};
 
 class MainLoopEntry {
     constructor(options) {
@@ -285,17 +278,17 @@ class MainLoopEntry {
     needsUpdate() {
         return true
     }
-}
 
-// ----
-// defaults
-// ----
-MainLoopEntry.defaults = {
-    onStart: noop,
-    onUpdate: noop,
-    onStop: noop,
-    onComplete: noop,
-};
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		onStart: noop,
+		onUpdate: noop,
+		onStop: noop,
+		onComplete: noop,
+	}
+}
 
 class Tween extends MainLoopEntry {
     constructor(options) {
@@ -391,19 +384,19 @@ class Tween extends MainLoopEntry {
     needsUpdate(timestamp) {
         return timestamp - (this._startTime + this._pauseDuration) < this.duration * this._range
     }
-}
 
-// ----
-// defaults
-// ----
-Tween.defaults = {
-    delay: 0,
-    duration: 1000,
-    easing: 'linear',
-    loop: 0,
-    reverse: false,
-    autoStart: true
-};
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		delay: 0,
+		duration: 1000,
+		easing: 'linear',
+		loop: 0,
+		reverse: false,
+		autoStart: true
+	}
+}
 
 // ----
 // utils
@@ -415,9 +408,10 @@ const compute = [
     value => 1 - value
 ];
 
-function getElements (element, context) {
-    return typeof element === 'string' ? (context || document).querySelectorAll(element) : element.length >= 0 ? element : [element]
-}
+var getElements = (element, context) => typeof element === 'string' ? 
+	(context || document).querySelectorAll(element) 
+	: 
+	element.length >= 0 ? element : [element];
 
 const instances = [];
 
@@ -432,15 +426,25 @@ class ThrottledEvent extends MainLoopEntry {
         events[eventType + 'end'] = [];
 
         this._events = events;
-
         this._needsUpdate = false;
-        this._reset = reset.bind(this);
-        this._onEvent = onEvent.bind(this);
         this._timer = null;
         this._target = target;
         this._eventType = eventType;
         this._event = null;
         this._name = name || '';
+		this._reset = () => { this._needsUpdate = false; };
+        this._onEvent = (e) => {
+			this._event = e;
+
+			if (!this._needsUpdate) {
+				this._needsUpdate = true;
+				this.start();
+				dispatch(this._events[this._eventType + 'start'], e);
+			}
+
+			clearTimeout(this._timer);
+			this._timer = setTimeout(this._reset, 128);
+		};
 
         this._target.addEventListener(this._eventType, this._onEvent, {passive: true});
     }
@@ -496,65 +500,45 @@ class ThrottledEvent extends MainLoopEntry {
     needsUpdate() {
         return this._needsUpdate
     }
+
+	// ----
+	// statics
+	// ----
+	static getInstance(target, eventType, name) {
+		let found;
+
+		name = name || '';
+
+		for (let i = 0; i < instances.length; i++) {
+			let instance = instances[i];
+			if (instance._eventType === eventType && instance._target === target && instance._name === name) {
+				found = instances[i];
+				break
+			}
+		}
+
+		if (!found) {
+			found = new ThrottledEvent(target, eventType, name);
+			instances.push(found);
+		}
+
+		return found
+	}
+
+	static destroy() {
+		while (instances[0]) {
+			instances[0].destroy();
+		}
+	}
 }
-
-// ----
-// statics
-// ----
-ThrottledEvent.getInstance = function(target, eventType, name) {
-    let found;
-
-    name = name || '';
-
-    for (let i = 0; i < instances.length; i++) {
-        let instance = instances[i];
-        if (instance._eventType === eventType && instance._target === target && instance._name === name) {
-            found = instances[i];
-            break
-        }
-    }
-
-    if (!found) {
-        found = new ThrottledEvent(target, eventType, name);
-        instances.push(found);
-    }
-
-    return found
-};
-
-ThrottledEvent.destroy = function() {
-    while (instances[0]) {
-        instances[0].destroy();
-    }
-};
 
 // ----
 // utils
 // ----
-function reset() {
-    this._needsUpdate = false;
-}
-
 function dispatch(array, e) {
     for (let i = 0; i < array.length; i++) {
         array[i](e);
     }
-}
-
-// ----
-// event
-// ----
-function onEvent(e) {
-    this._event = e;
-
-    if (!this._needsUpdate) {
-        this._needsUpdate = true;
-        this.start();
-        dispatch(this._events[this._eventType + 'start'], e);
-    }
-
-    clearTimeout(this._timer);
-    this._timer = setTimeout(this._reset, 128);
 }
 
 class Vector2 {
@@ -655,6 +639,10 @@ class Vector2 {
     }
 }
 
+var getDocumentScrollSize = () => new Vector2(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
+
+var getWindowScroll = () => new Vector2(window.pageXOffset, window.pageYOffset);
+
 class ScrollObserverEntry {
     constructor(element, options, scrollInfos) {
         assign(this, ScrollObserverEntry.defaults, options);
@@ -669,10 +657,12 @@ class ScrollObserverEntry {
     refresh(scrollInfos) {
         const
             bounding = this.element.getBoundingClientRect(),
-            scrollY = window.pageYOffset,
             height = window.innerHeight,
-            scrollX = window.pageXOffset,
-            width = window.innerWidth;
+            width = window.innerWidth,
+			windowScroll = getWindowScroll(),
+			scrollX = windowScroll.x,
+			scrollY = windowScroll.y,
+			documentScrollSize = getDocumentScrollSize();
         
         // start and distance Relative To Window 
         this.distanceRTW = new Vector2(
@@ -690,8 +680,8 @@ class ScrollObserverEntry {
             Math.max(bounding.top + scrollY - height, 0)
         );
         this.distanceRTE = new Vector2(
-            Math.min(bounding.right + scrollX - this.startRTE.x, document.documentElement.scrollWidth - width),
-            Math.min(bounding.bottom + scrollY - this.startRTE.y, document.documentElement.scrollHeight - height)
+            Math.min(bounding.right + scrollX - this.startRTE.x, documentScrollSize.x - width),
+            Math.min(bounding.bottom + scrollY - this.startRTE.y, documentScrollSize.y - height)
         );
 
         this.control(scrollInfos);
@@ -725,24 +715,24 @@ class ScrollObserverEntry {
 
         return this 
     }
-}
 
-// ----
-// defaults
-// ----
-ScrollObserverEntry.defaults = {
-    children: '',
-    onVisible: noop,
-    onVisibilityStart: noop,
-    onVisibilityEnd: noop,
-    onAlways: noop
-};
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		children: '',
+		onVisible: noop,
+		onVisibilityStart: noop,
+		onVisibilityEnd: noop,
+		onAlways: noop
+	}
+}
 
 // ----
 // utils
 // ----
 function round(v) {
-    return v.clone().set(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)))
+    return new Vector2(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)))
 }
 
 const
@@ -757,11 +747,11 @@ class ScrollObserver extends MainLoopEntry {
 
         this._elements = [];
         this._entries = [];
-        this._onScroll = this.start.bind(this);
-        this._onResize = this.refresh.bind(this);
+        this._onScroll = () => this.start();
+        this._onResize = () => this.refresh();
         this._lastScroll = new Vector2(0, 0);
         this._needsUpdate = true;
-        this._lastSize = getDocumentScroll();
+        this._lastSize = getDocumentScrollSize();
 
         resize = resize || new ThrottledEvent(window, 'resize');
         scroll = scroll || new ThrottledEvent(window, 'scroll');
@@ -837,10 +827,8 @@ class ScrollObserver extends MainLoopEntry {
     needsUpdate() {
         return this._needsUpdate && 
             scroll.needsUpdate() || 
-            this.scrollDivider > 1 && (
-                Math.abs(window.pageXOffset - this._lastScroll.x) > 1 || 
-                Math.abs(window.pageYOffset - this._lastScroll.y) > 1
-            )
+            this.scrollDivider > 1 && 
+			getWindowScroll().subtract(this._lastScroll).magnitude() > 1
     }
 
     hasEntry() {
@@ -850,10 +838,7 @@ class ScrollObserver extends MainLoopEntry {
     getScrollInfos() {
         const
             lastScroll = this._lastScroll,
-            scroll = new Vector2(
-                window.pageXOffset, 
-                window.pageYOffset
-            )
+            scroll = getWindowScroll()
                 .subtract(lastScroll)
                 .divideScalar(this.scrollDivider)
                 .add(lastScroll),
@@ -879,58 +864,48 @@ class ScrollObserver extends MainLoopEntry {
 
         return this
     }
+
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		scrollDivider: 1,
+		onRefresh: noop
+	}
+
+	static autoRefreshDelay = 1000
+	
+	static startAutoRefresh() {
+		let lastSize = getDocumentScrollSize();
+
+		if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
+			autoRefreshTimer = setInterval(() => {
+				const size = getDocumentScrollSize();
+
+				if (lastSize.x !== size.x || lastSize.y !== size.y) {
+					for (let i = 0; i < instances$1.length; i++) {
+						instances$1[i].refresh();
+					}
+
+					lastSize = size;
+				}
+			}, ScrollObserver.autoRefreshDelay);
+		}
+		return this
+	}
+
+	static stopAutoRefresh() {
+		clearInterval(autoRefreshTimer);
+		autoRefreshTimer = null;
+		return this
+	}
+
+	static destroy() {
+		while(instances$1[0]) {
+			instances$1[0].destroy();
+		}
+	}
 }
-
-// ----
-// defaults
-// ----
-ScrollObserver.defaults = {
-    scrollDivider: 1,
-    onRefresh: noop
-};
-
-// ----
-// utils
-// ----
-function getDocumentScroll() {
-    return new Vector2(document.documentElement.scrollWidth, document.documentElement.scrollHeight)
-}
-
-// ----
-// statics
-// ----
-ScrollObserver.autoRefreshDelay = 1000;
-
-ScrollObserver.startAutoRefresh = function() {
-    let lastSize = getDocumentScroll();
-
-    if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
-        autoRefreshTimer = setInterval(function() {
-            const size = getDocumentScroll();
-
-            if (lastSize.x !== size.x || lastSize.y !== size.y) {
-                for (let i = 0; i < instances$1.length; i++) {
-                    instances$1[i].refresh();
-                }
-
-                lastSize = size;
-            }
-        }, ScrollObserver.autoRefreshDelay);
-    }
-    return this
-};
-
-ScrollObserver.stopAutoRefresh = function() {
-    clearInterval(autoRefreshTimer);
-    autoRefreshTimer = null;
-    return this
-};
-
-ScrollObserver.destroy = function() {
-    while(instances$1[0]) {
-        instances$1[0].destroy();
-    }
-};
 
 /* eslint-disable no-empty-character-class */
 
@@ -983,7 +958,7 @@ class SplittedText {
         element.innerHTML = this._originalInnerHTML;
 
         if (this.byLine) {
-            wrapByWord(element, word => '<span class="st-word-temp">' + word + '</span>');
+            wrapByWord(element, getStringWrapper('st-word-temp'));
             
             const
                 children = element.children,
@@ -1034,31 +1009,29 @@ class SplittedText {
 
         return this
     }
-}
 
-// ----
-// defaults
-// ----
-SplittedText.defaults = {
-    autoSplit: true,
-    byLine: false,
-    byWord: false,
-    byChar: false,
-    preserve: 'st-char',
-    lineWrapper(line) {
-        return '<span class="st-line">' + line + '</span>'
-    },
-    wordWrapper(word) {
-        return '<span class="st-word">' + word + '</span>'
-    },
-    charWrapper(char) {
-        return '<span class="st-char">' + char + '</span>'
-    },
-};
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		autoSplit: true,
+		byLine: false,
+		byWord: false,
+		byChar: false,
+		preserve: 'st-char',
+		lineWrapper: getStringWrapper('st-line'),
+		wordWrapper: getStringWrapper('st-word'),
+		charWrapper: getStringWrapper('st-char'),
+	}
+}
 
 // ----
 // utils
 // ----
+function getStringWrapper(className) {
+	return (str) => '<span class="' + className + '">' + str + '</span>'
+}
+
 function traverseNode(element, textCallback, nodeCallback) {
     const 
         childNodes = element.childNodes;

@@ -2,6 +2,8 @@ import assign from '../function/assign'
 import noop from '../function/noop'
 import getElements from '../function/getElements'
 import Vector2 from './Vector2'
+import getDocumentScrollSize from '../function/getDocumentScrollSize'
+import getWindowScroll from '../function/getWindowScroll'
 
 class ScrollObserverEntry {
     constructor(element, options, scrollInfos) {
@@ -17,10 +19,12 @@ class ScrollObserverEntry {
     refresh(scrollInfos) {
         const
             bounding = this.element.getBoundingClientRect(),
-            scrollY = window.pageYOffset,
             height = window.innerHeight,
-            scrollX = window.pageXOffset,
-            width = window.innerWidth
+            width = window.innerWidth,
+			windowScroll = getWindowScroll(),
+			scrollX = windowScroll.x,
+			scrollY = windowScroll.y,
+			documentScrollSize = getDocumentScrollSize()
         
         // start and distance Relative To Window 
         this.distanceRTW = new Vector2(
@@ -38,8 +42,8 @@ class ScrollObserverEntry {
             Math.max(bounding.top + scrollY - height, 0)
         )
         this.distanceRTE = new Vector2(
-            Math.min(bounding.right + scrollX - this.startRTE.x, document.documentElement.scrollWidth - width),
-            Math.min(bounding.bottom + scrollY - this.startRTE.y, document.documentElement.scrollHeight - height)
+            Math.min(bounding.right + scrollX - this.startRTE.x, documentScrollSize.x - width),
+            Math.min(bounding.bottom + scrollY - this.startRTE.y, documentScrollSize.y - height)
         )
 
         this.control(scrollInfos)
@@ -73,24 +77,24 @@ class ScrollObserverEntry {
 
         return this 
     }
-}
 
-// ----
-// defaults
-// ----
-ScrollObserverEntry.defaults = {
-    children: '',
-    onVisible: noop,
-    onVisibilityStart: noop,
-    onVisibilityEnd: noop,
-    onAlways: noop
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		children: '',
+		onVisible: noop,
+		onVisibilityStart: noop,
+		onVisibilityEnd: noop,
+		onAlways: noop
+	}
 }
 
 // ----
 // utils
 // ----
 function round(v) {
-    return v.clone().set(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)))
+    return new Vector2(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)))
 }
 
 export default ScrollObserverEntry

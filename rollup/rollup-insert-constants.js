@@ -6,6 +6,15 @@ export default {
             '__window__': 'window',
             '__html__': 'document.documentElement',
             '__Math__': 'Math',
+			'__pow__': '__Math__.pow',
+			'__sqrt__': '__Math__.sqrt',
+			'__sin__': '__Math__.sin',
+			'__cos__': '__Math__.cos',
+			'__PI__': '__Math__.PI',
+			'__max__': '__Math__.max',
+			'__min__': '__Math__.min',
+			'__abs__': '__Math__.abs',
+			'__round__': '__Math__.round'
         }
 
         let str = 'const '

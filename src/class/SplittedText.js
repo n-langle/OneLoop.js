@@ -51,7 +51,7 @@ class SplittedText {
         element.innerHTML = this._originalInnerHTML
 
         if (this.byLine) {
-            wrapByWord(element, word => '<span class="st-word-temp">' + word + '</span>')
+            wrapByWord(element, getStringWrapper('st-word-temp'))
             
             const
                 children = element.children,
@@ -102,31 +102,29 @@ class SplittedText {
 
         return this
     }
-}
 
-// ----
-// defaults
-// ----
-SplittedText.defaults = {
-    autoSplit: true,
-    byLine: false,
-    byWord: false,
-    byChar: false,
-    preserve: 'st-char',
-    lineWrapper(line) {
-        return '<span class="st-line">' + line + '</span>'
-    },
-    wordWrapper(word) {
-        return '<span class="st-word">' + word + '</span>'
-    },
-    charWrapper(char) {
-        return '<span class="st-char">' + char + '</span>'
-    },
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		autoSplit: true,
+		byLine: false,
+		byWord: false,
+		byChar: false,
+		preserve: 'st-char',
+		lineWrapper: getStringWrapper('st-line'),
+		wordWrapper: getStringWrapper('st-word'),
+		charWrapper: getStringWrapper('st-char'),
+	}
 }
 
 // ----
 // utils
 // ----
+function getStringWrapper(className) {
+	return (str) => '<span class="' + className + '">' + str + '</span>'
+}
+
 function traverseNode(element, textCallback, nodeCallback) {
     const 
         childNodes = element.childNodes

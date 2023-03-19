@@ -13,15 +13,25 @@ class ThrottledEvent extends MainLoopEntry {
         events[eventType + 'end'] = []
 
         this._events = events
-
         this._needsUpdate = false
-        this._reset = reset.bind(this)
-        this._onEvent = onEvent.bind(this)
         this._timer = null
         this._target = target
         this._eventType = eventType
         this._event = null
         this._name = name || ''
+		this._reset = () => { this._needsUpdate = false }
+        this._onEvent = (e) => {
+			this._event = e
+
+			if (!this._needsUpdate) {
+				this._needsUpdate = true
+				this.start()
+				dispatch(this._events[this._eventType + 'start'], e)
+			}
+
+			clearTimeout(this._timer)
+			this._timer = setTimeout(this._reset, 128)
+		}
 
         this._target.addEventListener(this._eventType, this._onEvent, {passive: true})
     }
@@ -77,65 +87,45 @@ class ThrottledEvent extends MainLoopEntry {
     needsUpdate() {
         return this._needsUpdate
     }
-}
 
-// ----
-// statics
-// ----
-ThrottledEvent.getInstance = function(target, eventType, name) {
-    let found
+	// ----
+	// statics
+	// ----
+	static getInstance(target, eventType, name) {
+		let found
 
-    name = name || ''
+		name = name || ''
 
-    for (let i = 0; i < instances.length; i++) {
-        let instance = instances[i]
-        if (instance._eventType === eventType && instance._target === target && instance._name === name) {
-            found = instances[i]
-            break
-        }
-    }
+		for (let i = 0; i < instances.length; i++) {
+			let instance = instances[i]
+			if (instance._eventType === eventType && instance._target === target && instance._name === name) {
+				found = instances[i]
+				break
+			}
+		}
 
-    if (!found) {
-        found = new ThrottledEvent(target, eventType, name)
-        instances.push(found)
-    }
+		if (!found) {
+			found = new ThrottledEvent(target, eventType, name)
+			instances.push(found)
+		}
 
-    return found
-}
+		return found
+	}
 
-ThrottledEvent.destroy = function() {
-    while (instances[0]) {
-        instances[0].destroy()
-    }
+	static destroy() {
+		while (instances[0]) {
+			instances[0].destroy()
+		}
+	}
 }
 
 // ----
 // utils
 // ----
-function reset() {
-    this._needsUpdate = false
-}
-
 function dispatch(array, e) {
     for (let i = 0; i < array.length; i++) {
         array[i](e)
     }
-}
-
-// ----
-// event
-// ----
-function onEvent(e) {
-    this._event = e
-
-    if (!this._needsUpdate) {
-        this._needsUpdate = true
-        this.start()
-        dispatch(this._events[this._eventType + 'start'], e)
-    }
-
-    clearTimeout(this._timer)
-    this._timer = setTimeout(this._reset, 128)
 }
 
 export default ThrottledEvent

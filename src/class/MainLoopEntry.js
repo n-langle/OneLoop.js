@@ -33,16 +33,16 @@ class MainLoopEntry {
     needsUpdate() {
         return true
     }
-}
 
-// ----
-// defaults
-// ----
-MainLoopEntry.defaults = {
-    onStart: noop,
-    onUpdate: noop,
-    onStop: noop,
-    onComplete: noop,
+	// ----
+	// statics
+	// ----
+	static defaults = {
+		onStart: noop,
+		onUpdate: noop,
+		onStop: noop,
+		onComplete: noop,
+	}
 }
 
 export default MainLoopEntry
