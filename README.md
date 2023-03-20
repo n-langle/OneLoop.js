@@ -11,6 +11,8 @@ OneLoop.js
 
 The aim of the project is to create an easy to use, lightweight, cross-browser, animation library. The following documentation is not exhaustive, but provide the basic informations to use the library. Take a look at the code if you want to know more.
 
+Check out some examples on [codepen](https://codepen.io/collection/zxWBGm)
+
 ## ScrollObserver
 
 This code will create a scroll observer :
@@ -29,6 +31,11 @@ scrollObserver.observe('.css-selector', {
 
 ### Options
 ```javascript
+/**
+ * constructor
+ * @param options
+ * @return this 
+ */
 const scrollObserver = new ScrollObserver({
     scrollDivider: 2, // default: 1, smooth the scroll value
     onRefresh: function() {}, // triggered when the height of the document change or when the window is resized
@@ -56,12 +63,12 @@ scrollObserver.observe(element, {
          * this.children = NodeList selected by the css selector inside the element
          * 
          * scrollInformations = { 
-         *      y
-         *      deltaY
-         *      directionY
+         *      scroll: <Vector2>
+         *      delta: <Vector2>
+         *      direction: <Vector2>
          * }
-         * percentRTW = percent of distance covered by the element inside the window (Relative To Window)
-         * percentRTE = percent of distance covered by the element from his start and end position (Relative To Element, usefull for elements at the document top and bottom)
+         * percentRTW = vector2 of percent of distance covered by the element inside the window (Relative To Window)
+         * percentRTE = vector2 of percent of distance covered by the element from his start and end position (Relative To Element, usefull for elements at the document top and bottom)
          */
     },
     onVisibilityEnd: function(scrollInformations, percentRTW, percentRTE) {
@@ -108,6 +115,11 @@ new Tween({
 
 ### Options
 ```javascript
+/**
+ * constructor
+ * @param options
+ * @return this 
+ */
 const tween = new Tween({
     delay: 500,             // default: 0,
     duration: 500,          // default: 1000,
@@ -250,6 +262,11 @@ const splittedText = new SplittedText(element, { byWord: true });
 
 ### Options
 ```javascript
+/**
+ * constructor
+ * @param options
+ * @return this 
+ */
 const splittedText = new SplittedText({
     autoSplit: false,       // default: true, split the text in the constructor
     byLine: false,          // default: false, split the content by line
@@ -287,6 +304,64 @@ splittedText.split();
  * @return undefined
  */
 splittedText.destroy();
+```
+
+## Vector2
+
+OneLoop use internally Vector2 class and expose it for your convenience :
+
+```javascript
+import { Vector2 } from 'oneloop.js';
+
+const v1 = new Vector2();     // {x: 0, y: 0}
+const v2 = new Vector2(5);    // {x: 5, y: 5}
+const v2 = new Vector2(3, 5); // {x: 3, y: 5}
+```
+
+### Options
+```javascript
+/**
+ * constructor
+ * @param Number x
+ * @param Number y
+ * @return this 
+ */
+const vector2 = new Vector2();
+```
+
+### Methods
+```javascript
+vector2.set(x, y)
+
+vector2.add(vector2)
+
+vector2.addScalar(scalar)
+
+vector2.subtract(vector2)
+
+vector2.subtractScalar(scalar)
+
+vector2.multiply(vector2)
+
+vector2.multiplyScalar(scalar)
+
+vector2.divide(vector2)
+
+vector2.divideScalar(scalar)
+
+vector2.magnitude()
+
+vector2.normalize()
+
+vector2.reverse()
+
+vector2.copy(vector2)
+
+vector2.clone()
+
+vector2.angle()
+
+vector2.rotate(angle)
 ```
 
 ## easings

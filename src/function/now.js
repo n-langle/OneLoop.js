@@ -1,3 +1,1 @@
-export default function() {
-    return performance.now();
-}
+export default () => performance.now()
