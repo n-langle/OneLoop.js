@@ -40,6 +40,8 @@ class ScrollObserver extends MainLoopEntry {
         if (this._needsUpdate) {
             this._needsUpdate = false
 
+            // no need to control the index
+            // the flag needsUpdate do the job
             instances.splice(instances.indexOf(this), 1)
 
             if (instances.length === 0) {

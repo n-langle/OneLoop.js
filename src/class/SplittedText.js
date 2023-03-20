@@ -28,13 +28,17 @@ class SplittedText {
     }
 
     destroy() {
-        this.restore()
+        const index = instances.indexOf(this)
 
-        instances.splice(instances.indexOf(this), 1)
+        if (index > -1) {
+            this.restore()
 
-        if (!instances.length) {
-            resize.destroy()
-            resize = null
+            instances.splice(index, 1)
+
+            if (!instances.length) {
+                resize.destroy()
+                resize = null
+            }
         }
     }
 
