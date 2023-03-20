@@ -58,12 +58,12 @@ scrollObserver.observe(element, {
          * this.children = NodeList selected by the css selector inside the element
          * 
          * scrollInformations = { 
-         *      y
-         *      deltaY
-         *      directionY
+         *      scroll: <Vector2>
+         *      delta: <Vector2>
+         *      direction: <Vector2>
          * }
-         * percentRTW = percent of distance covered by the element inside the window (Relative To Window)
-         * percentRTE = percent of distance covered by the element from his start and end position (Relative To Element, usefull for elements at the document top and bottom)
+         * percentRTW = vector2 of percent of distance covered by the element inside the window (Relative To Window)
+         * percentRTE = vector2 of percent of distance covered by the element from his start and end position (Relative To Element, usefull for elements at the document top and bottom)
          */
     },
     onVisibilityEnd: function(scrollInformations, percentRTW, percentRTE) {
