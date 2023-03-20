@@ -21,10 +21,10 @@ class ScrollObserverEntry {
             bounding = this.element.getBoundingClientRect(),
             height = window.innerHeight,
             width = window.innerWidth,
-			windowScroll = getWindowScroll(),
-			scrollX = windowScroll.x,
-			scrollY = windowScroll.y,
-			documentScrollSize = getDocumentScrollSize()
+            windowScroll = getWindowScroll(),
+            scrollX = windowScroll.x,
+            scrollY = windowScroll.y,
+            documentScrollSize = getDocumentScrollSize()
         
         // start and distance Relative To Window 
         this.distanceRTW = new Vector2(
@@ -78,16 +78,16 @@ class ScrollObserverEntry {
         return this 
     }
 
-	// ----
-	// statics
-	// ----
-	static defaults = {
-		children: '',
-		onVisible: noop,
-		onVisibilityStart: noop,
-		onVisibilityEnd: noop,
-		onAlways: noop
-	}
+    // ----
+    // statics
+    // ----
+    static defaults = {
+        children: '',
+        onVisible: noop,
+        onVisibilityStart: noop,
+        onVisibilityEnd: noop,
+        onAlways: noop
+    }
 }
 
 // ----

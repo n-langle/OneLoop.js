@@ -138,46 +138,46 @@ class ScrollObserver extends MainLoopEntry {
         return this
     }
 
-	// ----
-	// statics
-	// ----
-	static defaults = {
-		scrollDivider: 1,
-		onRefresh: noop
-	}
+    // ----
+    // statics
+    // ----
+    static defaults = {
+        scrollDivider: 1,
+        onRefresh: noop
+    }
 
-	static autoRefreshDelay = 1000
-	
-	static startAutoRefresh() {
-		let lastSize = getDocumentScrollSize()
+    static autoRefreshDelay = 1000
+    
+    static startAutoRefresh() {
+        let lastSize = getDocumentScrollSize()
 
-		if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
-			autoRefreshTimer = setInterval(() => {
-				const size = getDocumentScrollSize()
+        if (autoRefreshTimer === null && ScrollObserver.autoRefreshDelay !== null) {
+            autoRefreshTimer = setInterval(() => {
+                const size = getDocumentScrollSize()
 
-				if (lastSize.x !== size.x || lastSize.y !== size.y) {
-					for (let i = 0; i < instances.length; i++) {
-						instances[i].refresh()
-					}
+                if (lastSize.x !== size.x || lastSize.y !== size.y) {
+                    for (let i = 0; i < instances.length; i++) {
+                        instances[i].refresh()
+                    }
 
-					lastSize = size
-				}
-			}, ScrollObserver.autoRefreshDelay)
-		}
-		return this
-	}
+                    lastSize = size
+                }
+            }, ScrollObserver.autoRefreshDelay)
+        }
+        return this
+    }
 
-	static stopAutoRefresh() {
-		clearInterval(autoRefreshTimer)
-		autoRefreshTimer = null
-		return this
-	}
+    static stopAutoRefresh() {
+        clearInterval(autoRefreshTimer)
+        autoRefreshTimer = null
+        return this
+    }
 
-	static destroy() {
-		while(instances[0]) {
-			instances[0].destroy()
-		}
-	}
+    static destroy() {
+        while(instances[0]) {
+            instances[0].destroy()
+        }
+    }
 }
 
 export default ScrollObserver

@@ -103,26 +103,26 @@ class SplittedText {
         return this
     }
 
-	// ----
-	// statics
-	// ----
-	static defaults = {
-		autoSplit: true,
-		byLine: false,
-		byWord: false,
-		byChar: false,
-		preserve: 'st-char',
-		lineWrapper: getStringWrapper('st-line'),
-		wordWrapper: getStringWrapper('st-word'),
-		charWrapper: getStringWrapper('st-char'),
-	}
+    // ----
+    // statics
+    // ----
+    static defaults = {
+        autoSplit: true,
+        byLine: false,
+        byWord: false,
+        byChar: false,
+        preserve: 'st-char',
+        lineWrapper: getStringWrapper('st-line'),
+        wordWrapper: getStringWrapper('st-word'),
+        charWrapper: getStringWrapper('st-char'),
+    }
 }
 
 // ----
 // utils
 // ----
 function getStringWrapper(className) {
-	return (str) => '<span class="' + className + '">' + str + '</span>'
+    return (str) => '<span class="' + className + '">' + str + '</span>'
 }
 
 function traverseNode(element, textCallback, nodeCallback) {
