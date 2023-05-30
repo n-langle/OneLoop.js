@@ -19,8 +19,12 @@ class ScrollObserverEntry {
     refresh(scrollInfos) {
         const
             bounding = this.element.getBoundingClientRect(),
-            height = window.innerHeight,
-            width = window.innerWidth,
+            elementHeight = bounding.height,
+            elementWidth = bounding.width,
+            elementRight = bounding.right,
+            elementBottom = bounding.bottom,
+            windowHeight = window.innerHeight,
+            windowWidth = window.innerWidth,
             windowScroll = getWindowScroll(),
             scrollX = windowScroll.x,
             scrollY = windowScroll.y,
@@ -28,22 +32,23 @@ class ScrollObserverEntry {
         
         // start and distance Relative To Window 
         this.distanceRTW = new Vector2(
-            width + bounding.right - bounding.left,
-            height + bounding.bottom - bounding.top
+            windowWidth + elementWidth,
+            windowHeight + elementHeight
         )
         this.startRTW = new Vector2(
-            bounding.right - this.distanceRTW.x + scrollX,
-            bounding.bottom - this.distanceRTW.y + scrollY
+            elementRight - this.distanceRTW.x + scrollX,
+            elementBottom - this.distanceRTW.y + scrollY
         )
 
         // start end distance Relative To Element
         this.startRTE = new Vector2(
-            Math.max(bounding.left + scrollX - width, 0),
-            Math.max(bounding.top + scrollY - height, 0)
+            Math.max(bounding.left + scrollX - windowWidth, 0),
+            Math.max(bounding.top + scrollY - windowHeight, 0)
         )
         this.distanceRTE = new Vector2(
-            Math.min(bounding.right + scrollX - this.startRTE.x, documentScrollSize.x - width),
-            Math.min(bounding.bottom + scrollY - this.startRTE.y, documentScrollSize.y - height)
+            // Math.min( in header, in footer, without scroll )
+            Math.min(elementRight + scrollX - this.startRTE.x, documentScrollSize.x - elementRight - scrollX + elementWidth, documentScrollSize.x - windowWidth),
+            Math.min(elementBottom + scrollY - this.startRTE.y, documentScrollSize.y - elementBottom - scrollY + elementHeight, documentScrollSize.y - windowHeight)
         )
 
         this.control(scrollInfos)
