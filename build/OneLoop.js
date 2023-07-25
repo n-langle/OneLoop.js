@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.0.1
+* Version: 5.0.2
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -931,9 +931,17 @@ class SplittedText {
     }
 
     split() {
-        const element = this._element;
+        const 
+            element = this._element,
+            innerHTML = this._originalInnerHTML;
 
-        element.innerHTML = this._originalInnerHTML;
+        if (!innerHTML) {
+            return this
+        }
+
+        if (element.innerHTML !== innerHTML) {
+            this.restore();
+        }
 
         if (this.byLine) {
             wrapByWord(element, getStringWrapper('st-word-temp'));

@@ -50,9 +50,17 @@ class SplittedText {
     }
 
     split() {
-        const element = this._element
+        const 
+            element = this._element,
+            innerHTML = this._originalInnerHTML
 
-        element.innerHTML = this._originalInnerHTML
+        if (!innerHTML) {
+            return this
+        }
+
+        if (element.innerHTML !== innerHTML) {
+            this.restore()
+        }
 
         if (this.byLine) {
             wrapByWord(element, getStringWrapper('st-word-temp'))
