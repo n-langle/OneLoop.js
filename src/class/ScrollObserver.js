@@ -22,7 +22,7 @@ class ScrollObserver extends MainLoopEntry {
         this._entries = []
         this._onScroll = () => this.start()
         this._onResize = () => this.refresh()
-        this._lastScroll = new Vector2(0, 0)
+        this._lastScroll = getWindowScroll()
         this._needsUpdate = true
         this._lastSize = getDocumentScrollSize()
 

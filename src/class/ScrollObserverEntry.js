@@ -10,7 +10,7 @@ class ScrollObserverEntry {
         assign(this, ScrollObserverEntry.defaults, options)
 
         this.element = element
-        this._isVisible = false
+        this._isVisible = true
         this.children = this.children ? getElements(this.children, this.element) : []
 
         this.refresh(scrollInfos)
@@ -65,8 +65,8 @@ class ScrollObserverEntry {
         if (p1.x >= 0 && p1.x <= 1 && p1.y >= 0 && p1.y <= 1) {
             if (!this._isVisible) {
                 this._isVisible = true
-                this.onVisibilityStart.call(this, scrollInfos, round(p1), round(p2))
-                this.onVisible.call(this, scrollInfos, round(p1), round(p2))
+                this.onVisibilityStart.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2))
+                this.onVisible.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2))
             }
 
             this.onVisible.call(this, scrollInfos, p1, p2)
@@ -74,8 +74,8 @@ class ScrollObserverEntry {
         } else if (this._isVisible) {
             this._isVisible = false
             
-            this.onVisible.call(this, scrollInfos, round(p1), round(p2))
-            this.onVisibilityEnd.call(this, scrollInfos, round(p1), round(p2))
+            this.onVisible.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2))
+            this.onVisibilityEnd.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2))
         }
 
         this.onAlways.call(this, scrollInfos, p1, p2)
@@ -98,8 +98,11 @@ class ScrollObserverEntry {
 // ----
 // utils
 // ----
-function round(v) {
-    return new Vector2(Math.abs(Math.round(v.x)), Math.abs(Math.round(v.y)))
+function getMinOrMax(v) {
+    return new Vector2(
+        Math.min(Math.max(0, Math.round(v.x)), 1),
+        Math.min(Math.max(0, Math.round(v.y)), 1)
+    )
 }
 
 export default ScrollObserverEntry
