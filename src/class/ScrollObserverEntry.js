@@ -15,6 +15,8 @@ class ScrollObserverEntry {
         this.children = this.children ? getElements(this.children, this.element) : []
 
         this.refresh(scrollInfos)
+
+        this._isInitialised = true
     }
 
     refresh(scrollInfos) {
@@ -73,7 +75,6 @@ class ScrollObserverEntry {
             this.onVisible.call(this, scrollInfos, p1, p2)
 
         } else if (this._isVisible || !this._isInitialised) {
-            this._isInitialised = true
             this._isVisible = false
             
             this.onVisible.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2))
