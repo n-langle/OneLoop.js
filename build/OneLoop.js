@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.0.4
+* Version: 5.1.0
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -746,7 +746,7 @@ class ScrollObserver extends MainLoopEntry {
             this._needsUpdate = false;
 
             // no need to control the index
-            // the flag needsUpdate do the job
+            // the flag needsUpdate does the job
             instances$1.splice(instances$1.indexOf(this), 1);
 
             if (instances$1.length === 0) {
@@ -842,6 +842,11 @@ class ScrollObserver extends MainLoopEntry {
 
         this.onRefresh.call(this, scrollInfos);
 
+        return this
+    }
+
+    synchronise() {
+        this._lastScroll = getWindowScroll();
         return this
     }
 

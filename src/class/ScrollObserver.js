@@ -41,7 +41,7 @@ class ScrollObserver extends MainLoopEntry {
             this._needsUpdate = false
 
             // no need to control the index
-            // the flag needsUpdate do the job
+            // the flag needsUpdate does the job
             instances.splice(instances.indexOf(this), 1)
 
             if (instances.length === 0) {
@@ -137,6 +137,11 @@ class ScrollObserver extends MainLoopEntry {
 
         this.onRefresh.call(this, scrollInfos)
 
+        return this
+    }
+
+    synchronise() {
+        this._lastScroll = getWindowScroll()
         return this
     }
 
