@@ -93,6 +93,13 @@ scrollObserver.unobserve(element);
 scrollObserver.hasEntry();
 
 /**
+ * synchronise
+ *      Force scrollObserver with scrollDivider > 1 to be equal to the current window scroll value
+ * @return bool
+ */
+scrollObserver.synchronise();
+
+/**
  * destroy
 * @return undefined
  */
