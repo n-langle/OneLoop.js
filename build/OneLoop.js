@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.1.1
+* Version: 5.1.2
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -1067,8 +1067,11 @@ function split(element, separator, wrapper, preserve) {
     return traverseNode(
         element,
         text => {
-            return text.trim() !== '' ? 
-                text.split(separator).map(wrapper).join(separator) 
+            const trimmedText = text.trim();
+            const spaceAfter = text.charAt(text.length - 1) === ' ' ? ' ' : '';
+
+            return trimmedText !== '' ?
+                (separator === '' ? text : trimmedText).split(separator).map(wrapper).join(separator) + spaceAfter
                 : 
                 text
         },

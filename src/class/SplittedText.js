@@ -175,8 +175,11 @@ function split(element, separator, wrapper, preserve) {
     return traverseNode(
         element,
         text => {
-            return text.trim() !== '' ? 
-                text.split(separator).map(wrapper).join(separator) 
+            const trimmedText = text.trim()
+            const spaceAfter = text.charAt(text.length - 1) === ' ' ? ' ' : ''
+
+            return trimmedText !== '' ?
+                (separator === '' ? text : trimmedText).split(separator).map(wrapper).join(separator) + spaceAfter
                 : 
                 text
         },
