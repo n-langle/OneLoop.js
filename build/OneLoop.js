@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.1.3
+* Version: 5.1.4
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -335,6 +335,7 @@ class Tween extends MainLoopEntry {
     complete(timestamp, tick) {
         const lastValue = (this._direction + 1) % 2;
 
+        this._executed = lastValue;
         this._pauseTime = null;
 
         this.onUpdate(timestamp, tick, lastValue);

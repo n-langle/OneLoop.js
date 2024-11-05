@@ -82,6 +82,7 @@ class Tween extends MainLoopEntry {
     complete(timestamp, tick) {
         const lastValue = (this._direction + 1) % 2
 
+        this._executed = lastValue
         this._pauseTime = null
 
         this.onUpdate(timestamp, tick, lastValue)
