@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.1.5
+* Version: 5.2.0
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -675,7 +675,7 @@ class ScrollObserverEntry {
         // if scrollX or scrollY is equal to window width or height
         p2.set(p2.x || 0, p2.y || 0);
 
-        if (p1.x >= 0 && p1.x <= 1 && p1.y >= 0 && p1.y <= 1) {
+        if ((this.disableCheckOnAxis === 'x' || p1.x >= 0 && p1.x <= 1) && (!this.disableCheckOnAxis === 'y' || p1.y >= 0 && p1.y <= 1)) {
             if (!this._isVisible) {
                 this._isVisible = true;
                 this.onVisibilityStart.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2));
@@ -702,6 +702,7 @@ class ScrollObserverEntry {
 // ----
 ScrollObserverEntry.defaults = {
     children: '',
+    disableCheckOnAxis: '',
     onVisible: noop,
     onVisibilityStart: noop,
     onVisibilityEnd: noop,
