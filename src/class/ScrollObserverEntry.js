@@ -65,7 +65,11 @@ class ScrollObserverEntry {
             p1 = scroll.clone().subtract(this.startRTW).divide(this.distanceRTW),
             p2 = scroll.clone().subtract(this.startRTE).divide(this.distanceRTE)
 
-        if (p1.x >= 0 && p1.x <= 1 && p1.y >= 0 && p1.y <= 1) {
+        // prevent NaN error
+        // if scrollX or scrollY is equal to window width or height
+        p2.set(p2.x || 0, p2.y || 0)
+
+        if ((this.disableCheckOnAxis === 'x' || p1.x >= 0 && p1.x <= 1) && (!this.disableCheckOnAxis === 'y' || p1.y >= 0 && p1.y <= 1)) {
             if (!this._isVisible) {
                 this._isVisible = true
                 this.onVisibilityStart.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2))
@@ -85,17 +89,18 @@ class ScrollObserverEntry {
 
         return this 
     }
+}
 
-    // ----
-    // statics
-    // ----
-    static defaults = {
-        children: '',
-        onVisible: noop,
-        onVisibilityStart: noop,
-        onVisibilityEnd: noop,
-        onAlways: noop
-    }
+// ----
+// statics
+// ----
+ScrollObserverEntry.defaults = {
+    children: '',
+    disableCheckOnAxis: '',
+    onVisible: noop,
+    onVisibilityStart: noop,
+    onVisibilityEnd: noop,
+    onAlways: noop
 }
 
 // ----

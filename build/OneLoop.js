@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.1.4
+* Version: 5.2.0
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -245,17 +245,17 @@ class MainLoopEntry {
     needsUpdate() {
         return true
     }
-
-    // ----
-    // statics
-    // ----
-    static defaults = {
-        onStart: noop,
-        onUpdate: noop,
-        onStop: noop,
-        onComplete: noop,
-    }
 }
+
+// ----
+// statics
+// ----
+MainLoopEntry.defaults = {
+    onStart: noop,
+    onUpdate: noop,
+    onStop: noop,
+    onComplete: noop,
+};
 
 class Tween extends MainLoopEntry {
     constructor(options) {
@@ -352,19 +352,19 @@ class Tween extends MainLoopEntry {
     needsUpdate(timestamp) {
         return timestamp - (this._startTime + this._pauseDuration) < this.duration * this._range
     }
-
-    // ----
-    // statics
-    // ----
-    static defaults = {
-        delay: 0,
-        duration: 1000,
-        easing: 'linear',
-        loop: 0,
-        reverse: false,
-        autoStart: true
-    }
 }
+
+// ----
+// statics
+// ----
+Tween.defaults = {
+    delay: 0,
+    duration: 1000,
+    easing: 'linear',
+    loop: 0,
+    reverse: false,
+    autoStart: true
+};
 
 // ----
 // utils
@@ -381,7 +381,7 @@ var getElements = (element, context) => typeof element === 'string' ?
     : 
     element.length >= 0 ? element : [element];
 
-const instances$2 = [];
+const instances = [];
 
 class ThrottledEvent extends MainLoopEntry {
     constructor(target, eventType, name) {
@@ -418,10 +418,10 @@ class ThrottledEvent extends MainLoopEntry {
     }
 
     destroy() {
-        const index = instances$2.indexOf(this);
+        const index = instances.indexOf(this);
 
         if (index > -1) {
-            instances$2.splice(index, 1);
+            instances.splice(index, 1);
         }
 
         this._target.removeEventListener(this._eventType, this._onEvent);
@@ -477,25 +477,25 @@ class ThrottledEvent extends MainLoopEntry {
 
         name = name || '';
 
-        for (let i = 0; i < instances$2.length; i++) {
-            let instance = instances$2[i];
+        for (let i = 0; i < instances.length; i++) {
+            let instance = instances[i];
             if (instance._eventType === eventType && instance._target === target && instance._name === name) {
-                found = instances$2[i];
+                found = instances[i];
                 break
             }
         }
 
         if (!found) {
             found = new ThrottledEvent(target, eventType, name);
-            instances$2.push(found);
+            instances.push(found);
         }
 
         return found
     }
 
     static destroy() {
-        while (instances$2[0]) {
-            instances$2[0].destroy();
+        while (instances[0]) {
+            instances[0].destroy();
         }
     }
 }
@@ -671,7 +671,11 @@ class ScrollObserverEntry {
             p1 = scroll.clone().subtract(this.startRTW).divide(this.distanceRTW),
             p2 = scroll.clone().subtract(this.startRTE).divide(this.distanceRTE);
 
-        if (p1.x >= 0 && p1.x <= 1 && p1.y >= 0 && p1.y <= 1) {
+        // prevent NaN error
+        // if scrollX or scrollY is equal to window width or height
+        p2.set(p2.x || 0, p2.y || 0);
+
+        if ((this.disableCheckOnAxis === 'x' || p1.x >= 0 && p1.x <= 1) && (!this.disableCheckOnAxis === 'y' || p1.y >= 0 && p1.y <= 1)) {
             if (!this._isVisible) {
                 this._isVisible = true;
                 this.onVisibilityStart.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2));
@@ -691,18 +695,19 @@ class ScrollObserverEntry {
 
         return this 
     }
-
-    // ----
-    // statics
-    // ----
-    static defaults = {
-        children: '',
-        onVisible: noop,
-        onVisibilityStart: noop,
-        onVisibilityEnd: noop,
-        onAlways: noop
-    }
 }
+
+// ----
+// statics
+// ----
+ScrollObserverEntry.defaults = {
+    children: '',
+    disableCheckOnAxis: '',
+    onVisible: noop,
+    onVisibilityStart: noop,
+    onVisibilityEnd: noop,
+    onAlways: noop
+};
 
 // ----
 // utils
@@ -717,7 +722,7 @@ function getMinOrMax(v) {
 const
     instances$1 = [];
 let autoRefreshTimer = null,
-    resize$1 = null,
+    resize = null,
     scroll = null;
 
 class ScrollObserver extends MainLoopEntry {
@@ -732,10 +737,10 @@ class ScrollObserver extends MainLoopEntry {
         this._needsUpdate = true;
         this._lastSize = getDocumentScrollSize();
 
-        resize$1 = resize$1 || new ThrottledEvent(window, 'resize');
+        resize = resize || new ThrottledEvent(window, 'resize');
         scroll = scroll || new ThrottledEvent(window, 'scroll');
 
-        resize$1.add('resize', this._onResize);
+        resize.add('resize', this._onResize);
         scroll.add('scrollstart', this._onScroll);
 
         instances$1.push(this);
@@ -752,11 +757,11 @@ class ScrollObserver extends MainLoopEntry {
 
             if (instances$1.length === 0) {
                 ScrollObserver.stopAutoRefresh();
-                resize$1.destroy();
+                resize.destroy();
                 scroll.destroy();
-                resize$1 = scroll = null;
+                resize = scroll = null;
             } else {
-                resize$1.remove('resize', this._onResize);
+                resize.remove('resize', this._onResize);
                 scroll.remove('scrollstart', this._onScroll);
             }
         }
@@ -854,13 +859,6 @@ class ScrollObserver extends MainLoopEntry {
     // ----
     // statics
     // ----
-    static defaults = {
-        scrollDivider: 1,
-        onRefresh: noop
-    }
-
-    static autoRefreshDelay = 1000
-    
     static startAutoRefresh() {
         let lastSize = getDocumentScrollSize();
 
@@ -893,13 +891,23 @@ class ScrollObserver extends MainLoopEntry {
     }
 }
 
+// ----
+// statics
+// ----
+ScrollObserver.defaults = {
+    scrollDivider: 1,
+    onRefresh: noop
+};
+
+ScrollObserver.autoRefreshDelay = 1000;
+
 /* eslint-disable no-empty-character-class */
 
 const 
-    instances = [],
+    instances$2 = [],
     specialCharRegExp = /(((?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])((\u200D(\u2640|\u2642)\uFE0F)|[]))|&([a-zA-Z]{2,6}|#[0-9]{2,5});|<|>)/g,
     whiteCharRegExp = /(\s)/;
-let resize = null;
+let resize$1 = null;
     
 class SplittedText {
     constructor(element, options) {
@@ -909,35 +917,35 @@ class SplittedText {
         this._element = element;
         this._onResize = this.split.bind(this);
 
-        if (!resize) {
-            resize = new ThrottledEvent(window, 'resize');
+        if (!resize$1) {
+            resize$1 = new ThrottledEvent(window, 'resize');
         }
 
         if (this.autoSplit) {
             this.split();
         }
 
-        instances.push(this);
+        instances$2.push(this);
     }
 
     destroy() {
-        const index = instances.indexOf(this);
+        const index = instances$2.indexOf(this);
 
         if (index > -1) {
             this.restore();
 
-            instances.splice(index, 1);
+            instances$2.splice(index, 1);
 
-            if (!instances.length) {
-                resize.destroy();
-                resize = null;
+            if (!instances$2.length) {
+                resize$1.destroy();
+                resize$1 = null;
             }
         }
     }
 
     restore() {
         this._element.innerHTML = this._originalInnerHTML;
-        resize.remove('resize', this._onResize);
+        resize$1.remove('resize', this._onResize);
 
         return this
     }
@@ -965,7 +973,7 @@ class SplittedText {
                 html = '',
                 lastOffsetTop = children[0].offsetTop;
 
-            resize.add('resize', this._onResize);
+            resize$1.add('resize', this._onResize);
 
             for (let i = 0; i < children.length; i++) {
                 const
@@ -1007,21 +1015,21 @@ class SplittedText {
 
         return this
     }
-
-    // ----
-    // statics
-    // ----
-    static defaults = {
-        autoSplit: true,
-        byLine: false,
-        byWord: false,
-        byChar: false,
-        preserve: 'st-char',
-        lineWrapper: getStringWrapper('st-line'),
-        wordWrapper: getStringWrapper('st-word'),
-        charWrapper: getStringWrapper('st-char'),
-    }
 }
+
+// ----
+// statics
+// ----
+SplittedText.defaults = {
+    autoSplit: true,
+    byLine: false,
+    byWord: false,
+    byChar: false,
+    preserve: 'st-char',
+    lineWrapper: getStringWrapper('st-line'),
+    wordWrapper: getStringWrapper('st-word'),
+    charWrapper: getStringWrapper('st-char'),
+};
 
 // ----
 // utils
@@ -1109,8 +1117,8 @@ function wrapByWord(element, wrapper) {
 // static
 // ----
 SplittedText.destroy = function() {
-    while (instances[0]) {
-        instances[0].destroy();
+    while (instances$2[0]) {
+        instances$2[0].destroy();
     }
 };
 
