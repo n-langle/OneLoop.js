@@ -52,6 +52,7 @@ const scrollObserver = new ScrollObserver({
  */
 scrollObserver.observe(element, {
     children: '.css-selector', // selector, NodeList, NodeElement
+    disableCheckOnAxis: 'y', // default: '', disable check on specific axis
     onVisibilityStart: function(scrollInformations, percentRTW, percentRTE) {
         // your code ...
     },
