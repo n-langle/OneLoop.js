@@ -85,17 +85,17 @@ class ScrollObserverEntry {
 
         return this 
     }
+}
 
-    // ----
-    // statics
-    // ----
-    static defaults = {
-        children: '',
-        onVisible: noop,
-        onVisibilityStart: noop,
-        onVisibilityEnd: noop,
-        onAlways: noop
-    }
+// ----
+// statics
+// ----
+ScrollObserverEntry.defaults = {
+    children: '',
+    onVisible: noop,
+    onVisibilityStart: noop,
+    onVisibilityEnd: noop,
+    onAlways: noop
 }
 
 // ----

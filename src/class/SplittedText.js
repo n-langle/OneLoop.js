@@ -114,20 +114,20 @@ class SplittedText {
 
         return this
     }
+}
 
-    // ----
-    // statics
-    // ----
-    static defaults = {
-        autoSplit: true,
-        byLine: false,
-        byWord: false,
-        byChar: false,
-        preserve: 'st-char',
-        lineWrapper: getStringWrapper('st-line'),
-        wordWrapper: getStringWrapper('st-word'),
-        charWrapper: getStringWrapper('st-char'),
-    }
+// ----
+// statics
+// ----
+SplittedText.defaults = {
+    autoSplit: true,
+    byLine: false,
+    byWord: false,
+    byChar: false,
+    preserve: 'st-char',
+    lineWrapper: getStringWrapper('st-line'),
+    wordWrapper: getStringWrapper('st-word'),
+    charWrapper: getStringWrapper('st-char'),
 }
 
 // ----

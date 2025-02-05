@@ -148,13 +148,6 @@ class ScrollObserver extends MainLoopEntry {
     // ----
     // statics
     // ----
-    static defaults = {
-        scrollDivider: 1,
-        onRefresh: noop
-    }
-
-    static autoRefreshDelay = 1000
-    
     static startAutoRefresh() {
         let lastSize = getDocumentScrollSize()
 
@@ -186,5 +179,15 @@ class ScrollObserver extends MainLoopEntry {
         }
     }
 }
+
+// ----
+// statics
+// ----
+ScrollObserver.defaults = {
+    scrollDivider: 1,
+    onRefresh: noop
+}
+
+ScrollObserver.autoRefreshDelay = 1000
 
 export default ScrollObserver
