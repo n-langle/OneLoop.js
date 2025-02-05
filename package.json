@@ -1,6 +1,6 @@
 {
     "name": "oneloop.js",
-    "version": "5.1.4",
+    "version": "5.1.5",
     "description": "Javascript animation library. Provide scroll observer, tween, throttled event, splitted text, vector2, easings in a bundle of about 5kb gzipped",
     "type": "module",
     "main": "./build/OneLoop.min.js",

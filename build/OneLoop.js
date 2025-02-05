@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.1.4
+* Version: 5.1.5
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -660,8 +660,6 @@ class ScrollObserverEntry {
             Math.min(elementBottom + scrollY - this.startRTE.y, documentScrollSize.y - elementBottom - scrollY + elementHeight, documentScrollSize.y - windowHeight)
         );
 
-        console.log('distance', this.distanceRTW, this.distanceRTE);
-
         this.control(scrollInfos);
 
         return this
@@ -672,6 +670,10 @@ class ScrollObserverEntry {
             scroll = scrollInfos.scroll,
             p1 = scroll.clone().subtract(this.startRTW).divide(this.distanceRTW),
             p2 = scroll.clone().subtract(this.startRTE).divide(this.distanceRTE);
+
+        // prevent NaN error
+        // if scrollX or scrollY is equal to window width or height
+        p2.set(p2.x || 0, p2.y || 0);
 
         if (p1.x >= 0 && p1.x <= 1 && p1.y >= 0 && p1.y <= 1) {
             if (!this._isVisible) {
