@@ -26,7 +26,7 @@ export default (function() {
 
         easeOutQuad: x => 1 - (1 - x) * (1 - x),
 
-        easeInOutQuadx: x => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2,
+        easeInOutQuad: x => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2,
 
         easeInCubic: x => x * x * x,
 
