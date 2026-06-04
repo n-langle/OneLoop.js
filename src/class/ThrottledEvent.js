@@ -43,6 +43,7 @@ class ThrottledEvent extends MainLoopEntry {
             instances.splice(index, 1)
         }
 
+        this.stop()
         this._target.removeEventListener(this._eventType, this._onEvent)
     }
 
