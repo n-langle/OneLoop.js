@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.2.1
+* Version: 5.2.2
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -37,7 +37,7 @@ var easings = (function() {
 
         easeOutQuad: x => 1 - (1 - x) * (1 - x),
 
-        easeInOutQuadx: x => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2,
+        easeInOutQuad: x => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2,
 
         easeInCubic: x => x * x * x,
 
@@ -424,6 +424,7 @@ class ThrottledEvent extends MainLoopEntry {
             instances$2.splice(index, 1);
         }
 
+        this.stop();
         this._target.removeEventListener(this._eventType, this._onEvent);
     }
 
@@ -675,7 +676,7 @@ class ScrollObserverEntry {
         // if scrollX or scrollY is equal to window width or height
         p2.set(p2.x || 0, p2.y || 0);
 
-        if ((this.disableCheckOnAxis === 'x' || p1.x >= 0 && p1.x <= 1) && (!this.disableCheckOnAxis === 'y' || p1.y >= 0 && p1.y <= 1)) {
+        if ((this.disableCheckOnAxis === 'x' || p1.x >= 0 && p1.x <= 1) && (this.disableCheckOnAxis === 'y' || p1.y >= 0 && p1.y <= 1)) {
             if (!this._isVisible) {
                 this._isVisible = true;
                 this.onVisibilityStart.call(this, scrollInfos, getMinOrMax(p1), getMinOrMax(p2));
@@ -1122,4 +1123,8 @@ SplittedText.destroy = function() {
     }
 };
 
-export { MainLoopEntry, ScrollObserver, SplittedText, ThrottledEvent, Tween, Vector2, easings };
+var interpolate = (start, end, percent) => start + (end - start) * percent;
+
+var inverseLerp = (start, end, percent) => Math.min(Math.max(0, Math.round((percent - start) / (end - start))), 1);
+
+export { MainLoopEntry, ScrollObserver, SplittedText, ThrottledEvent, Tween, Vector2, easings, interpolate, inverseLerp };
