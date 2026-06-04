@@ -424,6 +424,7 @@ class ThrottledEvent extends MainLoopEntry {
             instances$2.splice(index, 1);
         }
 
+        clearTimeout(this._timer);
         this.stop();
         this._target.removeEventListener(this._eventType, this._onEvent);
     }
@@ -1125,6 +1126,6 @@ SplittedText.destroy = function() {
 
 var interpolate = (start, end, percent) => start + (end - start) * percent;
 
-var inverseLerp = (start, end, percent) => Math.min(Math.max(0, Math.round((percent - start) / (end - start))), 1);
+var mapRange = (start, end, percent) => Math.min(Math.max(0, Math.round((percent - start) / (end - start))), 1);
 
-export { MainLoopEntry, ScrollObserver, SplittedText, ThrottledEvent, Tween, Vector2, easings, interpolate, inverseLerp };
+export { MainLoopEntry, ScrollObserver, SplittedText, ThrottledEvent, Tween, Vector2, easings, interpolate, mapRange };
