@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.3.0
+* Version: 5.3.1
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
@@ -1126,6 +1126,6 @@ SplittedText.destroy = function() {
 
 var interpolate = (start, end, percent) => start + (end - start) * percent;
 
-var mapRange = (start, end, percent) => Math.min(Math.max(0, Math.round((percent - start) / (end - start))), 1);
+var mapRange = (start, end, percent) => Math.min(Math.max(0, (percent - start) / (end - start)), 1);
 
 export { MainLoopEntry, ScrollObserver, SplittedText, ThrottledEvent, Tween, Vector2, easings, interpolate, mapRange };
