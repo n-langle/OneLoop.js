@@ -3,7 +3,7 @@
 * Copyright 2022 OneLoop.js
 * Author: Nicolas Langle
 * Repository: https://github.com/n-langle/OneLoop.js
-* Version: 5.2.2
+* Version: 5.3.0
 * SPDX-License-Identifier: MIT
 * 
 * Credit for easing functions goes to : https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
